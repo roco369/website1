@@ -1,2 +1,2 @@
 # gameroom
-[webサイト](https://roco369.github.io/website1/)
+roco369.github.io/gameroom/
