@@ -6,105 +6,53 @@
   <title>🫖 あなたのティータイム</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --gold:#c4a46a;--gold2:#e8cfa0;--cream:#fdf9f4;
-      --dark:#2c1f14;--text:#3a2a1a;--sub:#8a7060;--border:#ddd0b8;
-    }
+    :root{--gold:#c4a46a;--gold2:#e8cfa0;--cream:#fdf9f4;--dark:#2c1f14;--text:#3a2a1a;--sub:#8a7060;--border:#ddd0b8;}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-    body{
-      font-family:'Zen Maru Gothic',sans-serif;
-      background:var(--cream);color:var(--text);
-      min-height:100vh;
-      background-image:radial-gradient(ellipse at 20% 10%,#f8eed840 0%,transparent 55%),
-                       radial-gradient(ellipse at 80% 90%,#f0e0d040 0%,transparent 55%);
-    }
+    body{font-family:'Zen Maru Gothic',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;background-image:radial-gradient(ellipse at 20% 10%,#f8eed840 0%,transparent 55%),radial-gradient(ellipse at 80% 90%,#f0e0d040 0%,transparent 55%);}
     #root{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;}
     .wrap{width:100%;max-width:420px;}
-
-    /* ヘッダー */
     .g-header{text-align:center;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);}
     .h-en{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:5px;}
     .h-ja{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--dark);letter-spacing:1px;}
-
-    /* 主人公エリア */
     .heroine-area{display:flex;align-items:flex-end;gap:12px;margin-bottom:16px;background:white;border:1px solid var(--border);border-radius:16px;padding:12px 14px;box-shadow:0 2px 12px #c4a46a12;}
     .heroine-area img{width:68px;height:68px;object-fit:contain;flex-shrink:0;}
     .speech{flex:1;background:var(--cream);border:1px solid var(--border);border-radius:12px 12px 12px 4px;padding:9px 11px;font-size:12px;line-height:1.7;color:var(--text);}
     .speech-name{font-size:9px;color:var(--gold);letter-spacing:1px;margin-bottom:3px;font-family:'Cormorant Garamond',serif;}
-
-    /* ステップドット */
     .steps{display:flex;gap:6px;justify-content:center;margin-bottom:16px;}
     .dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all 0.3s;}
     .dot.active{background:var(--gold);transform:scale(1.3);}
     .dot.done{background:var(--gold2);}
-
-    /* セクションタイトル */
     .sec-title{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--dark);text-align:center;margin-bottom:12px;letter-spacing:1px;}
     .sec-title em{color:var(--gold);font-style:normal;}
-
-    /* シーン選択グリッド */
     .scene-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
     .scene-card{position:relative;border-radius:14px;overflow:hidden;cursor:pointer;border:2.5px solid transparent;transition:border-color 0.2s,transform 0.15s;aspect-ratio:1;}
-    .scene-card img{width:100%;height:100%;object-fit:cover;display:block;}
-    .scene-card .s-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(30,15,5,0.72) 0%,transparent 100%);color:white;font-size:11px;font-weight:700;padding:18px 8px 8px;text-align:center;letter-spacing:0.5px;}
+    .scene-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
+    .scene-card .s-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(30,15,5,0.72) 0%,transparent 100%);color:white;font-size:11px;font-weight:700;padding:18px 8px 8px;text-align:center;letter-spacing:0.5px;pointer-events:none;}
     .scene-card.on{border-color:var(--gold);}
-    .scene-card:active{transform:scale(0.97);}
-
-    /* カテゴリタブ */
     .cat-tabs{display:flex;gap:8px;margin-bottom:12px;}
-    .cat-btn{flex:1;border:1.5px solid var(--border);background:white;border-radius:10px;padding:8px 4px;font-family:inherit;font-size:12px;color:var(--sub);text-align:center;line-height:1.5;cursor:pointer;}
+    .cat-btn{flex:1;border:1.5px solid var(--border);background:white;border-radius:10px;padding:8px 4px;font-family:inherit;font-size:12px;color:var(--sub);text-align:center;line-height:1.5;cursor:pointer;-webkit-tap-highlight-color:transparent;}
     .cat-btn.on{background:var(--dark);color:var(--gold2);border-color:var(--dark);}
-
-    /* 茶葉グリッド */
     .tea-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
     .tea-card{background:white;border:1.5px solid var(--border);border-radius:14px;padding:10px 8px;text-align:center;cursor:pointer;transition:border-color 0.15s,background 0.15s;}
-    .tea-card img{width:70px;height:70px;object-fit:contain;margin-bottom:4px;}
+    .tea-card img{width:70px;height:70px;object-fit:contain;margin-bottom:4px;pointer-events:none;}
     .tea-card .t-name{font-size:12px;font-weight:700;color:var(--dark);margin-bottom:2px;}
     .tea-card .t-desc{font-size:9px;color:var(--sub);line-height:1.4;}
     .tea-card.on{background:#fdf8ee;border:2px solid var(--gold);}
     .tea-card.hide{display:none;}
-
-    /* ボタン */
-    .btn-main{width:100%;padding:13px;background:var(--dark);color:var(--gold2);border:none;border-radius:12px;font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:2px;cursor:pointer;}
+    .btn-main{width:100%;padding:13px;background:var(--dark);color:var(--gold2);border:none;border-radius:12px;font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:2px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
     .btn-main:disabled{opacity:0.35;cursor:not-allowed;}
-    .btn-sub{width:100%;padding:10px;background:white;color:var(--dark);border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:13px;cursor:pointer;margin-top:10px;}
-
-    /* パネル */
+    .btn-sub{width:100%;padding:10px;background:white;color:var(--dark);border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:13px;cursor:pointer;margin-top:10px;-webkit-tap-highlight-color:transparent;}
     .panel{display:none;}
     .panel.show{display:block;}
-
-    /* ====== 結果画面 ====== */
-    .result-wrap{position:relative;border-radius:18px;overflow:hidden;margin-bottom:16px;}
-    .result-bg{width:100%;display:block;border-radius:18px;}
-    .result-overlay{position:absolute;inset:0;pointer-events:none;}
-
-    /* エフェクトキャンバス */
+    .result-wrap{position:relative;border-radius:18px;overflow:hidden;margin-bottom:0;}
+    .result-bg{width:100%;display:block;}
     #fx-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
-
-    /* 妖精オーバーレイ */
-    .fairy-overlay{
-      position:absolute;bottom:0;right:0;
-      width:42%;max-width:160px;
-      object-fit:contain;
-      filter:drop-shadow(0 4px 16px rgba(0,0,0,0.18));
-      animation:fairyFloat 3.5s ease-in-out infinite;
-    }
+    .fairy-overlay{position:absolute;bottom:0;right:0;width:42%;max-width:160px;object-fit:contain;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.18));animation:fairyFloat 3.5s ease-in-out infinite;}
     @keyframes fairyFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-
-    /* メッセージバブル */
-    .msg-bubble{
-      position:absolute;top:12px;left:12px;right:50%;
-      background:rgba(255,252,246,0.93);
-      border:1.5px solid rgba(196,164,106,0.6);
-      border-radius:14px 14px 14px 4px;
-      padding:10px 12px;
-      pointer-events:none;
-    }
+    .msg-bubble{position:absolute;top:12px;left:12px;right:46%;background:rgba(255,252,246,0.93);border:1.5px solid rgba(196,164,106,0.6);border-radius:14px 14px 14px 4px;padding:10px 12px;pointer-events:none;}
     .msg-tea-name{font-size:10px;color:var(--gold);font-family:'Cormorant Garamond',serif;letter-spacing:1px;margin-bottom:4px;}
     .msg-text{font-size:11px;color:var(--dark);line-height:1.65;font-style:italic;font-family:'Cormorant Garamond',serif;}
-
-    /* 下部バー */
-    .result-bar{background:rgba(44,20,8,0.96);border-radius:0 0 18px 18px;padding:12px 16px 14px;margin-top:-4px;}
+    .result-bar{background:rgba(44,20,8,0.96);border-radius:0 0 18px 18px;padding:12px 16px 14px;}
     .res-label{font-size:9px;color:var(--gold);letter-spacing:2px;font-family:'Cormorant Garamond',serif;margin-bottom:7px;text-align:center;}
     .res-pills{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;}
     .res-pill{background:rgba(196,164,106,0.12);border:1px solid var(--gold);border-radius:20px;padding:4px 11px;font-size:10px;color:var(--gold2);}
@@ -114,14 +62,10 @@
 <body>
 <div id="root">
 <div class="wrap">
-
-  <!-- ヘッダー -->
   <div class="g-header">
     <div class="h-en">Tea Time Experience</div>
     <div class="h-ja">あなたのティータイム</div>
   </div>
-
-  <!-- 主人公 -->
   <div class="heroine-area">
     <img src="heroine.png" alt="主人公">
     <div class="speech">
@@ -129,87 +73,69 @@
       <div id="speech-text">今日はどんなひとときにしたい？<br>シーンを選んでね✨</div>
     </div>
   </div>
-
-  <!-- ステップ -->
   <div class="steps">
     <div class="dot active" id="dot0"></div>
     <div class="dot" id="dot1"></div>
     <div class="dot" id="dot2"></div>
   </div>
 
-  <!-- ===== パネル0：シーン選択 ===== -->
+  <!-- パネル0：シーン -->
   <div class="panel show" id="panel-scene">
     <div class="sec-title"><em>✦</em> シーンを選んでね <em>✦</em></div>
     <div class="scene-grid">
-      <div class="scene-card" id="sc-ojosama" onclick="selScene('ojosama')">
-        <img src="scene-ojosama.png" alt="お嬢様">
-        <div class="s-label">✨ お嬢様のティータイム</div>
-      </div>
-      <div class="scene-card" id="sc-rain" onclick="selScene('rain')">
-        <img src="scene-rain.png" alt="雨の日">
-        <div class="s-label">🌧 雨の日のティータイム</div>
-      </div>
-      <div class="scene-card" id="sc-forest" onclick="selScene('forest')">
-        <img src="scene-forest.png" alt="妖精の森">
-        <div class="s-label">🌿 妖精の森のティータイム</div>
-      </div>
-      <div class="scene-card" id="sc-night" onclick="selScene('night')">
-        <img src="scene-night.png" alt="夜のひとり時間">
-        <div class="s-label">🌙 夜のひとり時間</div>
-      </div>
+      <div class="scene-card" id="sc-ojosama"><img src="scene-ojosama.png" alt="お嬢様"><div class="s-label">✨ お嬢様のティータイム</div></div>
+      <div class="scene-card" id="sc-rain">   <img src="scene-rain.png"    alt="雨の日"><div class="s-label">🌧 雨の日のティータイム</div></div>
+      <div class="scene-card" id="sc-forest"> <img src="scene-forest.png"  alt="妖精の森"><div class="s-label">🌿 妖精の森のティータイム</div></div>
+      <div class="scene-card" id="sc-night">  <img src="scene-night.png"   alt="夜のひとり時間"><div class="s-label">🌙 夜のひとり時間</div></div>
     </div>
-    <button class="btn-main" id="btn-scene-next" onclick="goTea()" disabled>次へ — お茶を選ぶ</button>
+    <button class="btn-main" id="btn-scene-next" disabled>次へ — お茶を選ぶ</button>
   </div>
 
-  <!-- ===== パネル1：茶葉選択 ===== -->
+  <!-- パネル1：茶葉 -->
   <div class="panel" id="panel-tea">
     <div class="sec-title"><em>✦</em> お茶を選んでね <em>✦</em></div>
     <div class="cat-tabs">
-      <button class="cat-btn on" id="cat-black" onclick="setCat('black')">🫖 紅茶<br><small id="bk-cnt"></small></button>
-      <button class="cat-btn"    id="cat-herb"  onclick="setCat('herb')">🌿 ハーブティー<br><small id="hb-cnt"></small></button>
+      <button class="cat-btn on" id="cat-black">🫖 紅茶<br><small id="bk-cnt"></small></button>
+      <button class="cat-btn"    id="cat-herb" >🌿 ハーブティー<br><small id="hb-cnt"></small></button>
     </div>
     <div class="tea-grid">
-      <!-- 紅茶 -->
-      <div class="tea-card" id="tc-earlgrey"   data-cat="black" onclick="selTea('earlgrey')">  <img src="tea-earlgrey.png"   alt="アールグレイ">  <div class="t-name">アールグレイ</div>      <div class="t-desc">ベルガモットの香り。少し大人の時間に</div></div>
-      <div class="tea-card" id="tc-darjeeling" data-cat="black" onclick="selTea('darjeeling')"><img src="tea-darjeeling.png" alt="ダージリン">    <div class="t-name">ダージリン</div>        <div class="t-desc">繊細な香りが心を静かに整えてくれる</div></div>
-      <div class="tea-card" id="tc-assam"      data-cat="black" onclick="selTea('assam')">     <img src="tea-assam.png"     alt="アッサム">      <div class="t-name">アッサム</div>          <div class="t-desc">コクのある味わいが心まであたためる</div></div>
-      <div class="tea-card" id="tc-ceylon"     data-cat="black" onclick="selTea('ceylon')">    <img src="tea-ceylon.png"    alt="セイロン">      <div class="t-name">セイロン</div>          <div class="t-desc">すっきりとした飲み心地が気分を軽く</div></div>
-      <div class="tea-card" id="tc-lapsang"    data-cat="black" onclick="selTea('lapsang')">   <img src="tea-lapsang.png"   alt="ラプサン">      <div class="t-name">ラプサンスーチョン</div><div class="t-desc">独特なスモーキーさ。少しだけ冒険を</div></div>
-      <div class="tea-card" id="tc-keemun"     data-cat="black" onclick="selTea('keemun')">    <img src="tea-keemun.png"    alt="キームン">      <div class="t-name">キームン</div>          <div class="t-desc">やわらかな余韻が心を落ち着かせる</div></div>
-      <!-- ハーブ -->
-      <div class="tea-card hide" id="tc-chamomile"  data-cat="herb" onclick="selTea('chamomile')"> <img src="herb-chamomile.png"  alt="カモミール">  <div class="t-name">カモミール</div>  <div class="t-desc">やさしい香りが心をゆるめてくれる</div></div>
-      <div class="tea-card hide" id="tc-lavender"   data-cat="herb" onclick="selTea('lavender')">  <img src="herb-lavender.png"   alt="ラベンダー">  <div class="t-name">ラベンダー</div>  <div class="t-desc">やわらかな香りが疲れをほどく</div></div>
-      <div class="tea-card hide" id="tc-rose"       data-cat="herb" onclick="selTea('rose')">       <img src="herb-rose.png"       alt="ローズ">      <div class="t-name">ローズ</div>      <div class="t-desc">華やかな香りが気持ちを明るくする</div></div>
-      <div class="tea-card hide" id="tc-lemongrass" data-cat="herb" onclick="selTea('lemongrass')"><img src="herb-lemongrass.png" alt="レモングラス"><div class="t-name">レモングラス</div><div class="t-desc">さっぱりした香りが空気を変える</div></div>
-      <div class="tea-card hide" id="tc-mint"       data-cat="herb" onclick="selTea('mint')">       <img src="herb-mint.png"       alt="ミント">      <div class="t-name">ミント</div>      <div class="t-desc">爽やかな風みたいな心地よさ</div></div>
-      <div class="tea-card hide" id="tc-linden"     data-cat="herb" onclick="selTea('linden')">     <img src="herb-linden.png"     alt="リンデン">    <div class="t-name">リンデン</div>    <div class="t-desc">やさしいぬくもりが心を包み込む</div></div>
-      <div class="tea-card hide" id="tc-rosehip"    data-cat="herb" onclick="selTea('rosehip')">    <img src="herb-rosehip.png"    alt="ローズヒップ"><div class="t-name">ローズヒップ</div><div class="t-desc">ほんのり酸味が体をシャキッとさせる</div></div>
-      <div class="tea-card hide" id="tc-hibiscus"   data-cat="herb" onclick="selTea('hibiscus')">   <img src="herb-hibiscus.png"   alt="ハイビスカス"><div class="t-name">ハイビスカス</div><div class="t-desc">鮮やかな味わいが芯の強さをくれる</div></div>
+      <div class="tea-card" id="tc-earlgrey"   data-cat="black"><img src="tea-earlgrey.png"   alt="アールグレイ">  <div class="t-name">アールグレイ</div>      <div class="t-desc">ベルガモットの香り。少し大人の時間に</div></div>
+      <div class="tea-card" id="tc-darjeeling" data-cat="black"><img src="tea-darjeeling.png" alt="ダージリン">    <div class="t-name">ダージリン</div>        <div class="t-desc">繊細な香りが心を静かに整えてくれる</div></div>
+      <div class="tea-card" id="tc-assam"      data-cat="black"><img src="tea-assam.png"      alt="アッサム">      <div class="t-name">アッサム</div>          <div class="t-desc">コクのある味わいが心まであたためる</div></div>
+      <div class="tea-card" id="tc-ceylon"     data-cat="black"><img src="tea-ceylon.png"     alt="セイロン">      <div class="t-name">セイロン</div>          <div class="t-desc">すっきりとした飲み心地が気分を軽く</div></div>
+      <div class="tea-card" id="tc-lapsang"    data-cat="black"><img src="tea-lapsang.png"    alt="ラプサン">      <div class="t-name">ラプサンスーチョン</div><div class="t-desc">独特なスモーキーさ。少しだけ冒険を</div></div>
+      <div class="tea-card" id="tc-keemun"     data-cat="black"><img src="tea-keemun.png"     alt="キームン">      <div class="t-name">キームン</div>          <div class="t-desc">やわらかな余韻が心を落ち着かせる</div></div>
+      <div class="tea-card hide" id="tc-chamomile"  data-cat="herb"><img src="herb-chamomile.png"  alt="カモミール">  <div class="t-name">カモミール</div>  <div class="t-desc">やさしい香りが心をゆるめてくれる</div></div>
+      <div class="tea-card hide" id="tc-lavender"   data-cat="herb"><img src="herb-lavender.png"   alt="ラベンダー">  <div class="t-name">ラベンダー</div>  <div class="t-desc">やわらかな香りが疲れをほどく</div></div>
+      <div class="tea-card hide" id="tc-rose"       data-cat="herb"><img src="herb-rose.png"        alt="ローズ">      <div class="t-name">ローズ</div>      <div class="t-desc">華やかな香りが気持ちを明るくする</div></div>
+      <div class="tea-card hide" id="tc-lemongrass" data-cat="herb"><img src="herb-lemongrass.png"  alt="レモングラス"><div class="t-name">レモングラス</div><div class="t-desc">さっぱりした香りが空気を変える</div></div>
+      <div class="tea-card hide" id="tc-mint"       data-cat="herb"><img src="herb-mint.png"        alt="ミント">      <div class="t-name">ミント</div>      <div class="t-desc">爽やかな風みたいな心地よさ</div></div>
+      <div class="tea-card hide" id="tc-linden"     data-cat="herb"><img src="herb-linden.png"      alt="リンデン">    <div class="t-name">リンデン</div>    <div class="t-desc">やさしいぬくもりが心を包み込む</div></div>
+      <div class="tea-card hide" id="tc-rosehip"    data-cat="herb"><img src="herb-rosehip.png"     alt="ローズヒップ"><div class="t-name">ローズヒップ</div><div class="t-desc">ほんのり酸味が体をシャキッとさせる</div></div>
+      <div class="tea-card hide" id="tc-hibiscus"   data-cat="herb"><img src="herb-hibiscus.png"    alt="ハイビスカス"><div class="t-name">ハイビスカス</div><div class="t-desc">鮮やかな味わいが芯の強さをくれる</div></div>
     </div>
-    <button class="btn-main" id="btn-tea-next" onclick="goResult()" disabled>ティータイムをはじめる</button>
-    <button class="btn-sub" onclick="goScene()">← シーンを選び直す</button>
+    <button class="btn-main" id="btn-tea-next" disabled>ティータイムをはじめる</button>
+    <button class="btn-sub"  id="btn-back-scene">← シーンを選び直す</button>
   </div>
 
-  <!-- ===== パネル2：結果 ===== -->
+  <!-- パネル2：結果 -->
   <div class="panel" id="panel-result">
     <div class="result-wrap" id="result-wrap">
-      <img id="result-bg-img" src="" alt="結果背景" class="result-bg">
-      <div class="result-overlay">
-        <canvas id="fx-canvas"></canvas>
-        <img id="fairy-img" class="fairy-overlay" src="" alt="妖精">
-        <div class="msg-bubble">
-          <div class="msg-tea-name" id="msg-tea-name"></div>
-          <div class="msg-text" id="msg-text"></div>
-        </div>
+      <img id="result-bg-img" src="" alt="結果" class="result-bg">
+      <canvas id="fx-canvas"></canvas>
+      <img id="fairy-img" class="fairy-overlay" src="" alt="妖精">
+      <div class="msg-bubble">
+        <div class="msg-tea-name" id="msg-tea-name"></div>
+        <div class="msg-text" id="msg-text"></div>
       </div>
     </div>
     <div class="result-bar">
       <div class="res-label">— Your Tea Time —</div>
       <div class="res-pills">
-        <div class="res-pill"><span>SCENE</span><span id="res-scene"></span></div>
-        <div class="res-pill"><span>TEA</span><span id="res-tea"></span></div>
+        <div class="res-pill"><span>SCENE </span><span id="res-scene"></span></div>
+        <div class="res-pill"><span>TEA </span><span id="res-tea"></span></div>
       </div>
-      <button class="btn-main" onclick="goReset()">✦ もう一度選ぶ ✦</button>
+      <button class="btn-main" id="btn-reset">✦ もう一度選ぶ ✦</button>
     </div>
   </div>
 
@@ -217,95 +143,124 @@
 </div>
 
 <script>
-/* ===== データ ===== */
-const SCENES = {
-  ojosama:{label:"お嬢様のティータイム", result:"scene-ojosama-result.png"},
-  rain:   {label:"雨の日のティータイム", result:"scene-rain-result.png"},
+var SCENES={
+  ojosama:{label:"お嬢様のティータイム",result:"scene-ojosama-result.png"},
+  rain:   {label:"雨の日のティータイム",result:"scene-rain-result.png"},
   forest: {label:"妖精の森のティータイム",result:"scene-forest-result.png"},
-  night:  {label:"夜のひとり時間",        result:"scene-night-result.png"},
+  night:  {label:"夜のひとり時間",result:"scene-night-result.png"}
 };
-
-const TEAS = {
-  earlgrey:   {cat:"black",name:"アールグレイ",     img:"tea-earlgrey.png",
+var TEAS={
+  earlgrey:  {cat:"black",name:"アールグレイ",img:"tea-earlgrey.png",
     msg:"「少し大人の時間にしましょうか？」\n華やかな香りが、気分をやさしく引き上げてくれるね。\nいつもより、少しだけ特別な午後に。\nあなたはもう十分、魅力的よ✨"},
-  darjeeling: {cat:"black",name:"ダージリン",       img:"tea-darjeeling.png",
+  darjeeling:{cat:"black",name:"ダージリン",img:"tea-darjeeling.png",
     msg:"「ゆっくり味わうのが、いちばん贅沢ですのよ」\n繊細な香りが、心を静かに整えてくれる。\n穏やかな時間が、ここにあるね。\n焦らなくて大丈夫、ちゃんと進んでるから🌿"},
-  assam:      {cat:"black",name:"アッサム",         img:"tea-assam.png",
+  assam:     {cat:"black",name:"アッサム",img:"tea-assam.png",
     msg:"「ほっとする時間、いっしょに過ごそう？」\nコクのある味わいが、心まであたためてくれる。\n包み込まれるような安心感。\nがんばってるね、ちゃんと伝わってるよ☁️"},
-  ceylon:     {cat:"black",name:"セイロン",         img:"tea-ceylon.png",
+  ceylon:    {cat:"black",name:"セイロン",img:"tea-ceylon.png",
     msg:"「どんな時間にも、ちょうどいいね」\nすっきりとした飲み心地が、気分を軽くしてくれる。\n自然体でいられる、やさしいひととき。\n無理しなくても、そのままでいいんだよ✨"},
-  lapsang:    {cat:"black",name:"ラプサンスーチョン",img:"tea-lapsang.png",
-    msg:"「この香り…ちょっとクセになるでしょ？」\n独特なスモーキーさが、いつもと違う感覚をくれる。\n少しだけ冒険する時間。\nあなたの"好き"は、ちゃんと特別だよ🔥"},
-  keemun:     {cat:"black",name:"キームン",         img:"tea-keemun.png",
+  lapsang:   {cat:"black",name:"ラプサンスーチョン",img:"tea-lapsang.png",
+    msg:"「この香り…ちょっとクセになるでしょ？」\n独特なスモーキーさが、いつもと違う感覚をくれる。\n少しだけ冒険する時間。\nあなたの好きは、ちゃんと特別だよ🔥"},
+  keemun:    {cat:"black",name:"キームン",img:"tea-keemun.png",
     msg:"「静かな時間も、悪くないよね」\nやわらかな余韻が、心を落ち着かせてくれる。\n深く、穏やかなひととき。\n自分のペースで、大丈夫だからね🌙"},
-  chamomile:  {cat:"herb", name:"カモミール",       img:"herb-chamomile.png",
+  chamomile: {cat:"herb",name:"カモミール",img:"herb-chamomile.png",
     msg:"「ねむくなってきたら、少し休も…？」\nやさしい香りが、心をゆるめてくれる。\nふんわりほどける、安心の時間。\n今日はゆっくりでいいよ🌙"},
-  lavender:   {cat:"herb", name:"ラベンダー",       img:"herb-lavender.png",
+  lavender:  {cat:"herb",name:"ラベンダー",img:"herb-lavender.png",
     msg:"「がんばりすぎちゃったね」\nやわらかな香りが、疲れをそっとほどいてくれる。\n静かに癒されるひととき。\nちゃんと休むのも、大事なことだよ💜"},
-  rose:       {cat:"herb", name:"ローズ",           img:"herb-rose.png",
+  rose:      {cat:"herb",name:"ローズ",img:"herb-rose.png",
     msg:"「あなたは、ちゃんと美しいよ」\n華やかな香りが、気持ちを明るくしてくれる。\n少しだけ自分を大切にしたくなる時間。\nもっと自信、持っていいんだからね🌹"},
-  lemongrass: {cat:"herb", name:"レモングラス",     img:"herb-lemongrass.png",
+  lemongrass:{cat:"herb",name:"レモングラス",img:"herb-lemongrass.png",
     msg:"「気分、ちょっと軽くしていこっ！」\nさっぱりした香りが、空気を変えてくれる。\nリフレッシュできるひととき。\nまた新しく始めればいいよ✨"},
-  mint:       {cat:"herb", name:"ミント",           img:"herb-mint.png",
+  mint:      {cat:"herb",name:"ミント",img:"herb-mint.png",
     msg:"「すっきりしたい？任せて！」\n爽やかな風みたいな心地よさ。\n気分がパッと晴れる時間。\n大丈夫、まだまだいけるよ🌱"},
-  linden:     {cat:"herb", name:"リンデン",         img:"herb-linden.png",
+  linden:    {cat:"herb",name:"リンデン",img:"herb-linden.png",
     msg:"「ここにいるだけで、いいんだよ」\nやさしいぬくもりが、心を包み込む。\n安心できる、あたたかな時間。\nあなたはそのままで、ちゃんと大切だよ☀️"},
-  rosehip:    {cat:"herb", name:"ローズヒップ",     img:"herb-rosehip.png",
+  rosehip:   {cat:"herb",name:"ローズヒップ",img:"herb-rosehip.png",
     msg:"「元気、ちょっと分けてあげる！」\nほんのり酸味が、体をシャキッとさせてくれる。\n明るく前向きなひととき。\n今日もいいこと、きっとあるよ🍓"},
-  hibiscus:   {cat:"herb", name:"ハイビスカス",     img:"herb-hibiscus.png",
-    msg:"「内側から、きれいになろ？」\n鮮やかな味わいが、気持ちを引き締めてくれる。\n芯のある美しさを感じる時間。\nあなたはもっと輝けるよ❤️"},
+  hibiscus:  {cat:"herb",name:"ハイビスカス",img:"herb-hibiscus.png",
+    msg:"「内側から、きれいになろ？」\n鮮やかな味わいが、気持ちを引き締めてくれる。\n芯のある美しさを感じる時間。\nあなたはもっと輝けるよ❤️"}
+};
+var FX={
+  ojosama:{colors:["#f5e0c0","#f8d0e0","#fff0d0","#f0d0f8"],shapes:["heart","star","circle"],count:28},
+  rain:   {colors:["#c0d8f0","#d0e8f8","#a0c0e8","#e0f0f8"],shapes:["drop","circle","sparkle"],count:22},
+  forest: {colors:["#c0e8c0","#d8f0c0","#a0d8a0","#f0f8d0"],shapes:["leaf","star","circle"],count:25},
+  night:  {colors:["#d0c0f8","#f0d8f8","#c0d0f8","#fff0c0"],shapes:["star","sparkle","circle"],count:30}
 };
 
-/* ===== 状態 ===== */
-let curScene=null, curTea=null, curCat="black";
+var curScene=null,curTea=null,curCat="black";
+var fxAnim=null,particles=[];
 
-/* ===== 起動時 ===== */
 window.onload=function(){
-  var bk=Object.values(TEAS).filter(function(t){return t.cat==="black";}).length;
-  var hb=Object.values(TEAS).filter(function(t){return t.cat==="herb";}).length;
+  // 件数
+  var bk=0,hb=0;
+  for(var k in TEAS){if(TEAS[k].cat==="black")bk++;else hb++;}
   document.getElementById("bk-cnt").textContent=bk+"種";
   document.getElementById("hb-cnt").textContent=hb+"種";
+
+  // シーンカード
+  ["ojosama","rain","forest","night"].forEach(function(id){
+    document.getElementById("sc-"+id).addEventListener("click",function(){selScene(id);});
+  });
+
+  // 次へ（シーン）
+  document.getElementById("btn-scene-next").addEventListener("click",function(){goTea();});
+
+  // カテゴリタブ
+  document.getElementById("cat-black").addEventListener("click",function(){setCat("black");});
+  document.getElementById("cat-herb").addEventListener("click",function(){setCat("herb");});
+
+  // 茶葉カード
+  for(var tid in TEAS){
+    (function(id){
+      var el=document.getElementById("tc-"+id);
+      if(el) el.addEventListener("click",function(){selTea(id);});
+    })(tid);
+  }
+
+  // 次へ（茶葉）
+  document.getElementById("btn-tea-next").addEventListener("click",function(){goResult();});
+
+  // 戻る
+  document.getElementById("btn-back-scene").addEventListener("click",function(){goScene();});
+
+  // リセット
+  document.getElementById("btn-reset").addEventListener("click",function(){goReset();});
 };
 
-/* ===== シーン選択 ===== */
 function selScene(id){
   curScene=id;
-  document.querySelectorAll(".scene-card").forEach(function(c){c.className="scene-card";});
-  document.getElementById("sc-"+id).className="scene-card on";
+  ["ojosama","rain","forest","night"].forEach(function(s){
+    document.getElementById("sc-"+s).className="scene-card"+(s===id?" on":"");
+  });
   document.getElementById("btn-scene-next").disabled=false;
 }
 
-/* ===== カテゴリ切替 ===== */
 function setCat(c){
-  curCat=c;
-  curTea=null;
+  curCat=c;curTea=null;
   document.getElementById("cat-black").className="cat-btn"+(c==="black"?" on":"");
-  document.getElementById("cat-herb").className ="cat-btn"+(c==="herb" ?" on":"");
-  document.querySelectorAll(".tea-card").forEach(function(el){
-    var show=(el.dataset.cat===c);
-    el.className="tea-card"+(show?"":" hide");
-  });
+  document.getElementById("cat-herb").className="cat-btn"+(c==="herb"?" on":"");
+  for(var tid in TEAS){
+    var el=document.getElementById("tc-"+tid);
+    if(!el)continue;
+    el.className="tea-card"+(TEAS[tid].cat===c?"":" hide");
+  }
   document.getElementById("btn-tea-next").disabled=true;
 }
 
-/* ===== 茶葉選択 ===== */
 function selTea(id){
   curTea=id;
-  document.querySelectorAll(".tea-card").forEach(function(el){
-    if(!el.classList.contains("hide")) el.className="tea-card";
-  });
-  document.getElementById("tc-"+id).className="tea-card on";
+  for(var tid in TEAS){
+    var el=document.getElementById("tc-"+tid);
+    if(!el||el.classList.contains("hide"))continue;
+    el.className="tea-card"+(tid===id?" on":"");
+  }
   document.getElementById("btn-tea-next").disabled=false;
 }
 
-/* ===== ドット更新 ===== */
 function updateDots(s){
   [0,1,2].forEach(function(i){
     document.getElementById("dot"+i).className="dot"+(i<s?" done":i===s?" active":"");
   });
 }
-
-/* ===== 画面遷移 ===== */
 function showPanel(id){
   ["panel-scene","panel-tea","panel-result"].forEach(function(p){
     document.getElementById(p).className="panel"+(p===id?" show":"");
@@ -314,177 +269,83 @@ function showPanel(id){
 
 function goTea(){
   if(!curScene)return;
-  var s=SCENES[curScene];
-  document.getElementById("speech-text").textContent=
-    s.label+"を選んだんだね✨\n次は、一緒に飲むお茶を選んでね";
+  document.getElementById("speech-text").innerHTML=SCENES[curScene].label+"を選んだんだね✨<br>次は、一緒に飲むお茶を選んでね";
   showPanel("panel-tea");updateDots(1);
   window.scrollTo({top:0,behavior:"smooth"});
 }
-
 function goScene(){
   showPanel("panel-scene");updateDots(0);
-  document.getElementById("speech-text").textContent=
-    "今日はどんなひとときにしたい？\nシーンを選んでね✨";
+  document.getElementById("speech-text").innerHTML="今日はどんなひとときにしたい？<br>シーンを選んでね✨";
   window.scrollTo({top:0,behavior:"smooth"});
 }
-
 function goResult(){
   if(!curTea||!curScene)return;
-  var s=SCENES[curScene];
-  var t=TEAS[curTea];
-
-  // 背景と妖精
+  var s=SCENES[curScene],t=TEAS[curTea];
   document.getElementById("result-bg-img").src=s.result;
   document.getElementById("fairy-img").src=t.img;
-
-  // メッセージ
   document.getElementById("msg-tea-name").textContent="— "+t.name+" —";
   document.getElementById("msg-text").textContent=t.msg.split("\n")[0];
-
-  // ピルズ
   document.getElementById("res-scene").textContent=s.label;
   document.getElementById("res-tea").textContent=t.name;
-
+  document.getElementById("speech-text").innerHTML="素敵なティータイムを<br>お楽しみください✨";
   showPanel("panel-result");updateDots(2);
-  document.getElementById("speech-text").textContent=
-    "素敵なティータイムを\nお楽しみください、お嬢様✨";
-
   window.scrollTo({top:0,behavior:"smooth"});
-
-  // エフェクト（画像ロード後に実行）
   var img=document.getElementById("result-bg-img");
-  if(img.complete){startFX(curScene);}
-  else{img.onload=function(){startFX(curScene);};}
+  if(img.complete){startFX(curScene);}else{img.onload=function(){startFX(curScene);};}
 }
-
 function goReset(){
-  curScene=null;curTea=null;curCat="black";
-  document.querySelectorAll(".scene-card").forEach(function(c){c.className="scene-card";});
-  document.querySelectorAll(".tea-card").forEach(function(c){
-    c.className=(c.dataset.cat==="black"?"tea-card":"tea-card hide");
-  });
+  stopFX();curScene=null;curTea=null;curCat="black";
+  ["ojosama","rain","forest","night"].forEach(function(s){document.getElementById("sc-"+s).className="scene-card";});
+  for(var tid in TEAS){var el=document.getElementById("tc-"+tid);if(el)el.className="tea-card"+(TEAS[tid].cat==="black"?"":" hide");}
   document.getElementById("cat-black").className="cat-btn on";
   document.getElementById("cat-herb").className="cat-btn";
   document.getElementById("btn-scene-next").disabled=true;
   document.getElementById("btn-tea-next").disabled=true;
-  document.getElementById("speech-text").textContent=
-    "今日はどんなひとときにしたい？\nシーンを選んでね✨";
-  stopFX();
+  document.getElementById("speech-text").innerHTML="今日はどんなひとときにしたい？<br>シーンを選んでね✨";
   showPanel("panel-scene");updateDots(0);
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-/* ===== パーティクルエフェクト ===== */
-var fxAnim=null;
-var particles=[];
-
-var FX_THEMES={
-  ojosama:{colors:["#f5e0c0","#f8d0e0","#fff0d0","#f0d0f8"],shapes:["heart","star","circle"],count:28},
-  rain:   {colors:["#c0d8f0","#d0e8f8","#a0c0e8","#e0f0f8"],shapes:["drop","circle","sparkle"],count:22},
-  forest: {colors:["#c0e8c0","#d8f0c0","#a0d8a0","#f0f8d0"],shapes:["leaf","star","circle"],count:25},
-  night:  {colors:["#d0c0f8","#f0d8f8","#c0d0f8","#fff0c0"],shapes:["star","sparkle","circle"],count:30},
-};
-
+// エフェクト
 function startFX(scene){
   var canvas=document.getElementById("fx-canvas");
   var wrap=document.getElementById("result-wrap");
-  canvas.width=wrap.offsetWidth;
-  canvas.height=wrap.offsetHeight;
+  canvas.width=wrap.offsetWidth;canvas.height=wrap.offsetHeight;
   particles=[];
-  var theme=FX_THEMES[scene]||FX_THEMES.ojosama;
-  for(var i=0;i<theme.count;i++){
-    particles.push({
-      x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height,
-      vx:(Math.random()-0.5)*0.6,
-      vy:-0.4-Math.random()*0.8,
-      size:4+Math.random()*8,
-      color:theme.colors[Math.floor(Math.random()*theme.colors.length)],
-      shape:theme.shapes[Math.floor(Math.random()*theme.shapes.length)],
-      alpha:0.6+Math.random()*0.4,
-      life:1,decay:0.003+Math.random()*0.004,
-      rot:Math.random()*Math.PI*2,rotV:(Math.random()-0.5)*0.05,
-    });
+  var th=FX[scene]||FX.ojosama;
+  for(var i=0;i<th.count;i++){
+    particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,
+      vx:(Math.random()-0.5)*0.6,vy:-0.4-Math.random()*0.8,
+      size:4+Math.random()*8,color:th.colors[Math.floor(Math.random()*th.colors.length)],
+      shape:th.shapes[Math.floor(Math.random()*th.shapes.length)],
+      alpha:0.6+Math.random()*0.4,life:Math.random(),decay:0.003+Math.random()*0.004,
+      rot:Math.random()*Math.PI*2,rotV:(Math.random()-0.5)*0.05});
   }
-  if(fxAnim) cancelAnimationFrame(fxAnim);
+  if(fxAnim)cancelAnimationFrame(fxAnim);
   animFX();
 }
-
 function animFX(){
   var canvas=document.getElementById("fx-canvas");
-  if(!canvas)return;
+  if(!canvas||!document.getElementById("panel-result").classList.contains("show")){stopFX();return;}
   var ctx=canvas.getContext("2d");
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  var alive=false;
   for(var i=0;i<particles.length;i++){
     var p=particles[i];
-    p.x+=p.vx; p.y+=p.vy; p.life-=p.decay; p.rot+=p.rotV;
-    if(p.life<=0){
-      // リセット
-      p.x=Math.random()*canvas.width;
-      p.y=canvas.height+10;
-      p.life=0.7+Math.random()*0.3;
-    }
-    alive=true;
-    ctx.save();
-    ctx.globalAlpha=p.life*p.alpha;
-    ctx.translate(p.x,p.y);
-    ctx.rotate(p.rot);
-    ctx.fillStyle=p.color;
-
-    if(p.shape==="heart"){
-      var s=p.size;
-      ctx.beginPath();
-      ctx.moveTo(0,-s*0.3);
-      ctx.bezierCurveTo(s*0.5,-s*0.8,s,-s*0.2,0,s*0.5);
-      ctx.bezierCurveTo(-s,-s*0.2,-s*0.5,-s*0.8,0,-s*0.3);
-      ctx.fill();
-    } else if(p.shape==="star"){
-      drawStar(ctx,0,0,p.size*0.4,p.size,5);
-      ctx.fill();
-    } else if(p.shape==="sparkle"){
-      ctx.strokeStyle=p.color;ctx.lineWidth=1.5;
-      ctx.beginPath();ctx.moveTo(-p.size,0);ctx.lineTo(p.size,0);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(0,-p.size);ctx.lineTo(0,p.size);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(-p.size*0.6,-p.size*0.6);ctx.lineTo(p.size*0.6,p.size*0.6);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(p.size*0.6,-p.size*0.6);ctx.lineTo(-p.size*0.6,p.size*0.6);ctx.stroke();
-    } else if(p.shape==="drop"){
-      ctx.beginPath();
-      ctx.moveTo(0,-p.size);
-      ctx.bezierCurveTo(p.size*0.6,-p.size*0.2,p.size*0.6,p.size*0.5,0,p.size);
-      ctx.bezierCurveTo(-p.size*0.6,p.size*0.5,-p.size*0.6,-p.size*0.2,0,-p.size);
-      ctx.fill();
-    } else if(p.shape==="leaf"){
-      ctx.beginPath();
-      ctx.ellipse(0,0,p.size*0.4,p.size,0,0,Math.PI*2);
-      ctx.fill();
-    } else {
-      ctx.beginPath();ctx.arc(0,0,p.size*0.5,0,Math.PI*2);ctx.fill();
-    }
+    p.x+=p.vx;p.y+=p.vy;p.life-=p.decay;p.rot+=p.rotV;
+    if(p.life<=0){p.x=Math.random()*canvas.width;p.y=canvas.height+10;p.life=0.7+Math.random()*0.3;}
+    ctx.save();ctx.globalAlpha=p.life*p.alpha;ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillStyle=p.color;
+    if(p.shape==="heart"){ctx.beginPath();var s=p.size;ctx.moveTo(0,-s*0.3);ctx.bezierCurveTo(s*0.5,-s*0.8,s,-s*0.2,0,s*0.5);ctx.bezierCurveTo(-s,-s*0.2,-s*0.5,-s*0.8,0,-s*0.3);ctx.fill();}
+    else if(p.shape==="star"){dStar(ctx,0,0,p.size*0.4,p.size,5);ctx.fill();}
+    else if(p.shape==="sparkle"){ctx.strokeStyle=p.color;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-p.size,0);ctx.lineTo(p.size,0);ctx.stroke();ctx.beginPath();ctx.moveTo(0,-p.size);ctx.lineTo(0,p.size);ctx.stroke();}
+    else if(p.shape==="drop"){ctx.beginPath();ctx.moveTo(0,-p.size);ctx.bezierCurveTo(p.size*0.6,-p.size*0.2,p.size*0.6,p.size*0.5,0,p.size);ctx.bezierCurveTo(-p.size*0.6,p.size*0.5,-p.size*0.6,-p.size*0.2,0,-p.size);ctx.fill();}
+    else if(p.shape==="leaf"){ctx.beginPath();ctx.ellipse(0,0,p.size*0.4,p.size,0,0,Math.PI*2);ctx.fill();}
+    else{ctx.beginPath();ctx.arc(0,0,p.size*0.5,0,Math.PI*2);ctx.fill();}
     ctx.restore();
   }
-  if(alive) fxAnim=requestAnimationFrame(animFX);
+  fxAnim=requestAnimationFrame(animFX);
 }
-
-function drawStar(ctx,cx,cy,r,R,n){
-  ctx.beginPath();
-  for(var i=0;i<n*2;i++){
-    var radius=i%2===0?R:r;
-    var angle=Math.PI/n*i-Math.PI/2;
-    if(i===0)ctx.moveTo(cx+radius*Math.cos(angle),cy+radius*Math.sin(angle));
-    else ctx.lineTo(cx+radius*Math.cos(angle),cy+radius*Math.sin(angle));
-  }
-  ctx.closePath();
-}
-
-function stopFX(){
-  if(fxAnim) cancelAnimationFrame(fxAnim);
-  fxAnim=null;
-  particles=[];
-  var canvas=document.getElementById("fx-canvas");
-  if(canvas){var ctx=canvas.getContext("2d");ctx.clearRect(0,0,canvas.width,canvas.height);}
-}
+function dStar(ctx,cx,cy,r,R,n){ctx.beginPath();for(var i=0;i<n*2;i++){var rad=i%2===0?R:r,ang=Math.PI/n*i-Math.PI/2;if(i===0)ctx.moveTo(cx+rad*Math.cos(ang),cy+rad*Math.sin(ang));else ctx.lineTo(cx+rad*Math.cos(ang),cy+rad*Math.sin(ang));}ctx.closePath();}
+function stopFX(){if(fxAnim)cancelAnimationFrame(fxAnim);fxAnim=null;particles=[];var c=document.getElementById("fx-canvas");if(c){var ctx=c.getContext("2d");ctx.clearRect(0,0,c.width,c.height);}}
 </script>
 </body>
 </html>
