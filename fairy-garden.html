@@ -3,1017 +3,498 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>✨ ようせいそだて - Fairy Garden</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <title>🫖 あなたのティータイム</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
-    body {
-      font-family:'Zen Maru Gothic',sans-serif;
-      min-height:100vh;
-      background:linear-gradient(160deg,#fdf0ff 0%,#f0e0ff 45%,#e8d0ff 100%);
-      margin:0; padding:0;
+    :root{--gold:#c4a46a;--gold2:#e8cfa0;--cream:#fdf9f4;--dark:#2c1f14;--text:#3a2a1a;--sub:#8a7060;--border:#ddd0b8;}
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+    body{font-family:'Zen Maru Gothic',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;background-image:radial-gradient(ellipse at 20% 10%,#f8eed840 0%,transparent 55%),radial-gradient(ellipse at 80% 90%,#f0e0d040 0%,transparent 55%);}
+    #root{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;}
+    .wrap{width:100%;max-width:420px;}
+    .h-en{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:5px;}
+    .h-ja{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--dark);letter-spacing:1px;}
+    .heroine-area{display:flex;align-items:flex-end;gap:12px;margin-bottom:16px;background:white;border:1px solid var(--border);border-radius:16px;padding:12px 14px;box-shadow:0 2px 12px #c4a46a12;}
+    .heroine-area img{width:68px;height:68px;object-fit:contain;flex-shrink:0;}
+    .speech{flex:1;background:var(--cream);border:1px solid var(--border);border-radius:12px 12px 12px 4px;padding:9px 11px;font-size:12px;line-height:1.7;color:var(--text);}
+    .speech-name{font-size:9px;color:var(--gold);letter-spacing:1px;margin-bottom:3px;font-family:'Cormorant Garamond',serif;}
+    .steps{display:flex;gap:6px;justify-content:center;margin-bottom:16px;}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all 0.3s;}
+    .dot.active{background:var(--gold);transform:scale(1.3);}
+    .dot.done{background:var(--gold2);}
+    .sec-title{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--dark);text-align:center;margin-bottom:12px;letter-spacing:1px;}
+    .sec-title em{color:var(--gold);font-style:normal;}
+    .scene-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+    .scene-card{position:relative;border-radius:14px;overflow:hidden;cursor:pointer;border:2.5px solid transparent;transition:border-color 0.2s,transform 0.15s;aspect-ratio:1;}
+    .scene-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
+    .scene-card .s-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(30,15,5,0.72) 0%,transparent 100%);color:white;font-size:11px;font-weight:700;padding:18px 8px 8px;text-align:center;letter-spacing:0.5px;pointer-events:none;}
+    .scene-card.on{border-color:var(--gold);}
+    .cat-tabs{display:flex;gap:8px;margin-bottom:12px;}
+    .cat-btn{flex:1;border:1.5px solid var(--border);background:white;border-radius:10px;padding:8px 4px;font-family:inherit;font-size:12px;color:var(--sub);text-align:center;line-height:1.5;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+    .cat-btn.on{background:var(--dark);color:var(--gold2);border-color:var(--dark);}
+    .tea-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+    .tea-card{background:white;border:1.5px solid var(--border);border-radius:14px;padding:10px 8px;text-align:center;cursor:pointer;transition:border-color 0.15s,background 0.15s;}
+    .tea-card img{width:70px;height:70px;object-fit:contain;margin-bottom:4px;pointer-events:none;}
+    .tea-card .t-name{font-size:12px;font-weight:700;color:var(--dark);margin-bottom:2px;}
+    .tea-card .t-desc{font-size:9px;color:var(--sub);line-height:1.4;}
+    .tea-card.on{background:#fdf8ee;border:2px solid var(--gold);}
+    .tea-card.hide{display:none;}
+    .btn-main{width:100%;padding:13px;background:var(--dark);color:var(--gold2);border:none;border-radius:12px;font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:2px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+    .btn-main:disabled{opacity:0.35;cursor:not-allowed;}
+    .btn-sub{width:100%;padding:10px;background:white;color:var(--dark);border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:13px;cursor:pointer;margin-top:10px;-webkit-tap-highlight-color:transparent;}
+    .panel{display:none;}
+    .panel.show{display:block;}
+    .result-wrap{position:relative;border-radius:18px 18px 0 0;overflow:hidden;margin-bottom:0;}
+    .result-bg{width:100%;display:block;}
+    #fx-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+    /* メッセージバブル：上部、右に妖精が乗る */
+    .msg-bubble{
+      position:absolute;top:12px;left:12px;right:12px;
+      background:rgba(255,252,246,0.72);
+      border:1.5px solid rgba(196,164,106,0.45);
+      border-radius:14px;padding:11px 100px 11px 14px;
+      pointer-events:none;
+      backdrop-filter:blur(2px);
     }
-    #root {
-      min-height:100vh;
-      display:flex; align-items:center; justify-content:center; padding:16px;
+    .msg-tea-name{font-size:10px;color:var(--gold);font-family:'Cormorant Garamond',serif;letter-spacing:1px;margin-bottom:4px;}
+    .msg-text{font-size:12px;color:var(--dark);line-height:1.6;font-style:italic;font-family:'Cormorant Garamond',serif;}
+    /* 妖精：バブル右端に小さく乗せる */
+    .fairy-overlay{
+      position:absolute;top:0;right:8px;
+      width:90px;max-width:90px;
+      object-fit:contain;
+      filter:drop-shadow(0 2px 8px rgba(0,0,0,0.15));
+      animation:fairyFloat 3.5s ease-in-out infinite;
     }
-    @keyframes float    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-    @keyframes particle { 0%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-190%) scale(2)} }
-    @keyframes shimmer  { 0%,100%{opacity:0.35} 50%{opacity:0.8} }
-    @keyframes fadeIn   { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes pulse    { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
-    @keyframes popIn    { 0%{opacity:0;transform:translateX(-50%) scale(0.7)} 100%{opacity:1;transform:translateX(-50%) scale(1)} }
-    @keyframes saveFlash{ 0%{opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
-    @keyframes spin     { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-    @keyframes modalIn  { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
-
-    .fairy-float{animation:float 3s ease-in-out infinite;}
-    .particle{position:absolute;font-size:22px;animation:particle 1.8s ease-out forwards;pointer-events:none;}
-    .msg-bubble{animation:fadeIn 0.3s ease;}
-    .pulse-glow{animation:pulse 3s ease-in-out infinite;}
-    .save-flash{animation:saveFlash 1.5s ease forwards;}
-
-    .bg-circle{position:fixed;border-radius:50%;pointer-events:none;}
-    #app{width:100%;max-width:380px;position:relative;}
-
-    .card{
-      background:rgba(255,248,255,0.93);backdrop-filter:blur(12px);
-      border-radius:28px;box-shadow:0 8px 40px #c080f040,0 2px 8px #d090e030;
-      border:1.5px solid #f0d0ff;overflow:hidden;position:relative;
+    @keyframes fairyFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+    /* サブメッセージ：背景の上に半透明で重ねる */
+    .sub-msg-wrap{
+      position:absolute;bottom:0;left:0;right:0;
+      background:linear-gradient(to top, rgba(44,20,8,0.72) 0%, transparent 100%);
+      padding:28px 16px 14px;
+      pointer-events:none;
     }
-
-    /* ヘッダー */
-    .header{padding:13px 16px 11px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
-    .header-title{color:white;font-size:16px;font-weight:700;}
-    .header-sub{color:rgba(255,255,255,0.75);font-size:10px;}
-    .header-right{display:flex;align-items:center;gap:8px;}
-    .header-stage{color:white;font-size:12px;font-weight:600;text-align:right;}
-    .header-age{color:rgba(255,255,255,0.7);font-size:10px;}
-    .reset-btn{
-      background:rgba(255,255,255,0.22);border:1.5px solid rgba(255,255,255,0.45);
-      border-radius:9px;padding:5px 8px;color:white;font-size:14px;
-      cursor:pointer;touch-action:manipulation;line-height:1;font-family:inherit;
+    .sub-msg-text{
+      font-size:15px;font-weight:400;color:white;
+      text-align:center;letter-spacing:0.5px;
+      text-shadow:0 1px 8px rgba(0,0,0,0.5);
+      font-family:'Cormorant Garamond',serif;
+      font-style:italic;
     }
-
-    /* メインタブ */
-    .tabs{display:flex;border-bottom:1.5px solid #f0d0ff;}
-    .tab-btn{flex:1;border:none;font-family:inherit;font-size:13px;padding:9px 0;cursor:pointer;touch-action:manipulation;transition:color 0.2s;}
-
-    .game-area{padding:0 18px 18px;}
-
-    /* 名前 */
-    .name-area{text-align:center;padding-top:10px;margin-bottom:2px;}
-    .name-display{font-size:15px;font-weight:700;cursor:pointer;border-bottom:1.5px dashed;display:inline-block;touch-action:manipulation;}
-    .name-input-row{display:flex;gap:6px;justify-content:center;}
-    .name-input{border-radius:10px;padding:4px 10px;font-family:inherit;font-size:14px;outline:none;width:120px;}
-    .name-ok-btn{color:white;border:none;border-radius:10px;padding:4px 12px;cursor:pointer;font-family:inherit;touch-action:manipulation;}
-
-    .fairy-display{position:relative;height:180px;display:flex;align-items:center;justify-content:center;}
-    .glow-circle{position:absolute;width:150px;height:150px;border-radius:50%;}
-
-    .message-box{
-      background:white;border:1.5px solid #e8c0ff;border-radius:16px;
-      padding:7px 14px;font-size:12px;color:#7030b0;text-align:center;
-      margin-bottom:10px;min-height:32px;display:flex;align-items:center;justify-content:center;
-      box-shadow:0 2px 8px #e0b0ff25;
+    .result-bar{background:rgba(44,20,8,0.96);border-radius:0 0 18px 18px;padding:12px 16px 14px;}
+    .res-label{font-size:9px;color:var(--gold);letter-spacing:2px;font-family:'Cormorant Garamond',serif;margin-bottom:7px;text-align:center;}
+    .res-pills{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;}
+    .res-pill{background:rgba(196,164,106,0.12);border:1px solid var(--gold);border-radius:20px;padding:4px 11px;font-size:10px;color:var(--gold2);}
+    .res-pill span{color:rgba(196,164,106,0.5);font-size:8px;margin-right:3px;}
+    /* BGMボタン */
+    .bgm-btn{
+      position:absolute;top:12px;right:14px;
+      background:rgba(255,252,246,0.15);
+      border:1px solid rgba(196,164,106,0.4);
+      border-radius:20px;padding:4px 11px;
+      font-size:11px;color:rgba(255,248,230,0.9);
+      cursor:pointer;letter-spacing:0.5px;
+      font-family:'Cormorant Garamond',serif;
+      transition:background 0.2s;
+      z-index:10;
     }
-
-    .status-panel{background:#fdf0ff;border-radius:16px;padding:10px 14px;margin-bottom:10px;border:1px solid #f0d0ff;}
-    .status-row{margin-bottom:6px;}
-    .status-label{display:flex;justify-content:space-between;font-size:10px;color:#9d6bcc;margin-bottom:2px;}
-    .bar-bg{background:#f0e0ff;border-radius:10px;height:6px;overflow:hidden;}
-    .bar-fill{height:100%;border-radius:10px;transition:width 0.5s;}
-
-    .action-btns{display:flex;justify-content:center;gap:7px;}
-    .action-btn{
-      border:none;border-radius:12px;padding:8px 6px;
-      font-size:20px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:56px;
-      touch-action:manipulation;user-select:none;font-family:inherit;cursor:pointer;transition:opacity 0.2s,transform 0.1s;
-    }
-    .action-btn span.lbl{font-size:9px;}
-    .action-btn:disabled{opacity:0.55;cursor:not-allowed;background:#e8d0f0!important;color:#b090c0!important;box-shadow:none!important;}
-    .action-btn:active:not(:disabled){transform:translateY(2px);}
-
-    .dead-area{text-align:center;}
-    .dead-msg{color:#9060b0;font-size:13px;margin-bottom:12px;line-height:1.7;}
-    .retry-btn{border:none;border-radius:14px;padding:10px 20px;color:white;font-size:13px;cursor:pointer;font-family:inherit;font-weight:600;touch-action:manipulation;}
-
-    /* コレクション */
-    .collection-area{padding:14px 16px 22px;}
-    .collection-title{font-size:14px;font-weight:700;color:#7030b0;margin-bottom:12px;text-align:center;}
-    .fairy-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:16px;}
-    .fairy-card{border-radius:14px;padding:10px 5px 8px;text-align:center;cursor:default;}
-    .fairy-card-name{font-size:11px;font-weight:700;margin-top:2px;}
-    .fairy-card-desc{font-size:9px;color:#8060a0;margin-top:3px;line-height:1.4;font-style:italic;}
-    .fairy-card-msg{font-size:8px;color:#b090c0;margin-top:2px;}
-    .lock-icon{font-size:28px;margin:4px 0 5px;}
-    .lock-ques{font-size:10px;color:#c0a0d0;}
-    .lock-hint{font-size:8px;color:#d0b0e0;margin-top:2px;}
-
-    .retired-title{font-size:12px;font-weight:700;color:#9050c0;margin-bottom:7px;}
-    .retired-item{display:flex;align-items:center;gap:8px;background:white;border-radius:12px;padding:7px 10px;margin-bottom:5px;}
-    .retired-name{font-size:12px;font-weight:600;}
-    .retired-info{font-size:9px;color:#a080c0;}
-    .stats-box{margin-top:9px;background:#fdf0ff;border-radius:12px;padding:9px 13px;font-size:10px;color:#9060b0;border:1px solid #f0d0ff;line-height:2;}
-
-    /* トースト */
-    .save-toast{position:absolute;top:56px;right:12px;z-index:50;background:white;border:1px solid #d0c0f0;border-radius:10px;padding:4px 9px;font-size:10px;color:#9060c0;box-shadow:0 2px 8px #e0c0ff40;pointer-events:none;}
-    .unlock-toast{position:absolute;top:62px;left:50%;background:white;border-radius:14px;padding:9px 18px;z-index:100;box-shadow:0 4px 20px #c080f040;text-align:center;white-space:nowrap;}
-    .unlock-toast-sub{font-size:10px;color:#a060c0;}
-    .unlock-toast-main{font-size:14px;font-weight:700;}
-
-    /* モーダル共通 */
-    .modal-overlay{
-      position:fixed;inset:0;background:rgba(180,120,220,0.35);backdrop-filter:blur(4px);
-      z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;
-    }
-    .modal-box{
-      background:white;border-radius:22px;padding:24px 20px;width:100%;max-width:320px;
-      box-shadow:0 8px 32px #c080f060;border:2px solid #e8c0ff;
-      animation:modalIn 0.2s ease;
-    }
-    .modal-title{font-size:16px;font-weight:700;color:#8030c0;text-align:center;margin-bottom:6px;}
-    .modal-sub{font-size:12px;color:#a080c0;text-align:center;margin-bottom:18px;}
-    .modal-btns{display:flex;gap:10px;margin-top:16px;}
-    .modal-btn{flex:1;border:none;border-radius:12px;padding:10px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation;}
-    .modal-btn-cancel{background:#f5f0ff;color:#9060b0;border:1.5px solid #e0d0f0;}
-    .modal-btn-ok{color:white;}
-
-    /* 妖精選択グリッド */
-    .select-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;max-height:260px;overflow-y:auto;}
-    .select-card{
-      border-radius:12px;padding:10px 5px 8px;text-align:center;cursor:pointer;
-      border:2px solid transparent;transition:transform 0.15s,border-color 0.15s;
-    }
-    .select-card:hover{transform:translateY(-3px);}
-    .select-card.selected{border-color:currentColor;}
-    .select-card-name{font-size:11px;font-weight:700;margin-top:2px;}
-
-    #loading{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
-    #loading .spin{font-size:48px;display:inline-block;animation:spin 2s linear infinite;}
-    #loading p{color:#9050c0;font-size:14px;}
+    .bgm-btn:hover{background:rgba(255,252,246,0.28);}
+    .g-header{text-align:center;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);position:relative;}
   </style>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-6852GRP9WE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-6852GRP9WE');
-</script>
 </head>
 <body>
+<!-- BGM -->
+<audio id="bgm-select" src="選択シーン.mp3" loop preload="auto"></audio>
+<audio id="bgm-ojosama" src="お嬢様のティータイム.mp3" loop preload="auto"></audio>
+<audio id="bgm-rain"    src="雨の日ティータイム.mp3"   loop preload="auto"></audio>
+<audio id="bgm-forest"  src="妖精の森のティータイム.mp3" loop preload="auto"></audio>
+<audio id="bgm-night"   src="夜のひとり時間.mp3"        loop preload="auto"></audio>
 <div id="root">
-<div id="loading"><span class="spin">🧚</span><p>よみこみちゅう…</p></div>
-
-<div id="app" style="display:none">
-  <div class="bg-circle" id="bg0"></div><div class="bg-circle" id="bg1"></div>
-  <div class="bg-circle" id="bg2"></div><div class="bg-circle" id="bg3"></div>
-  <div class="bg-circle" id="bg4"></div>
-
-  <div class="card">
-    <div id="save-toast" class="save-toast" style="display:none">💾 セーブしたよ</div>
-    <div id="unlock-toast" class="unlock-toast" style="display:none">
-      <div class="unlock-toast-sub">✨ あたらしい妖精をゲット！</div>
-      <div class="unlock-toast-main" id="unlock-toast-name"></div>
-    </div>
-
-    <!-- ヘッダー -->
-    <div class="header" id="header">
-      <div>
-        <div class="header-title">✨ ようせいそだて</div>
-        <div class="header-sub">Fairy Garden · 自動セーブ</div>
-      </div>
-      <div class="header-right">
-        <div>
-          <div class="header-stage" id="header-stage">たまご</div>
-          <div class="header-age" id="header-age">age 0.0</div>
-        </div>
-        <button class="reset-btn" id="bgm-btn" ontouchstart="toggleBGM(event)" onclick="toggleBGM(event)" title="BGM">🔇</button>
-        <button class="reset-btn" ontouchstart="confirmReset(event)" onclick="confirmReset(event)" title="はじめから">🔄</button>
-      </div>
-    </div>
-
-    <!-- スロット兼メインタブ（3つ） -->
-    <div class="tabs">
-      <button class="tab-btn" id="tab-slot0" ontouchstart="switchSlotTab(0,event)" onclick="switchSlotTab(0,event)">🧚 妖精1</button>
-      <button class="tab-btn" id="tab-slot1" ontouchstart="switchSlotTab(1,event)" onclick="switchSlotTab(1,event)">🧚 妖精2</button>
-      <button class="tab-btn" id="tab-collection" onclick="setTab('collection')">📖 ずかん</button>
-    </div>
-
-    <!-- ゲームエリア -->
-    <div id="panel-game" class="game-area">
-      <div class="name-area">
-        <span class="name-display" id="name-display" onclick="showNameEdit()"></span>
-        <div class="name-input-row" id="name-edit" style="display:none">
-          <input class="name-input" id="name-input" maxlength="8" placeholder="なまえ">
-          <button class="name-ok-btn" id="name-ok-btn" onclick="saveName()">OK</button>
-        </div>
-      </div>
-      <div class="fairy-display">
-        <div class="glow-circle pulse-glow" id="glow-circle"></div>
-        <div id="particles"></div>
-        <div class="fairy-float" id="fairy-sprite-wrap"></div>
-      </div>
-      <div class="message-box msg-bubble" id="message-box">よみこみちゅう…</div>
-      <div class="status-panel">
-        <div class="status-row">
-          <div class="status-label"><span>🍓 おなか</span><span id="val-hunger">80</span></div>
-          <div class="bar-bg"><div class="bar-fill" id="bar-hunger" style="width:80%"></div></div>
-        </div>
-        <div class="status-row">
-          <div class="status-label"><span>💖 しあわせ</span><span id="val-happiness">80</span></div>
-          <div class="bar-bg"><div class="bar-fill" id="bar-happiness" style="width:80%"></div></div>
-        </div>
-        <div class="status-row">
-          <div class="status-label"><span>✨ げんき</span><span id="val-health">100</span></div>
-          <div class="bar-bg"><div class="bar-fill" id="bar-health" style="width:100%"></div></div>
-        </div>
-        <div class="status-row" style="margin-bottom:0">
-          <div class="status-label"><span>⚡ たいりょく</span><span id="val-energy">100</span></div>
-          <div class="bar-bg"><div class="bar-fill" id="bar-energy" style="width:100%"></div></div>
-        </div>
-      </div>
-      <div class="action-btns" id="action-btns">
-        <button class="action-btn" id="btn-feed"  ontouchstart="handleFeed(event)"  onclick="handleFeed(event)">🍓<span class="lbl">たべる</span></button>
-        <button class="action-btn" id="btn-play"  ontouchstart="handlePlay(event)"  onclick="handlePlay(event)">🎵<span class="lbl">あそぶ</span></button>
-        <button class="action-btn" id="btn-sleep" ontouchstart="handleSleep(event)" onclick="handleSleep(event)">🌙<span class="lbl">ねる</span></button>
-        <button class="action-btn" id="btn-heal"  ontouchstart="handleHeal(event)"  onclick="handleHeal(event)">💊<span class="lbl">くすり</span></button>
-      </div>
-      <div class="dead-area" id="dead-area" style="display:none">
-        <div class="dead-msg" id="dead-msg"></div>
-        <button class="retry-btn" id="retry-btn" onclick="showFairySelect()">✨ もういちど</button>
-      </div>
-    </div>
-
-    <!-- コレクションエリア -->
-    <div id="panel-collection" class="collection-area" style="display:none">
-      <div class="collection-title">📖 ようせいずかん</div>
-      <div class="fairy-grid" id="fairy-grid"></div>
-      <div id="retired-section"></div>
-      <div class="stats-box" id="stats-box"></div>
+<div class="wrap">
+  <div class="g-header">
+    <div class="h-en">Tea Time Experience</div>
+    <div class="h-ja">あなたのティータイム</div>
+    <button class="bgm-btn" id="bgm-toggle-btn" style="position:static;margin-top:8px;display:inline-block;">🔊 BGM ON</button>
+  </div>
+  <div class="heroine-area">
+    <img src="heroine.png" alt="主人公">
+    <div class="speech">
+      <div class="speech-name">— あなたへ —</div>
+      <div id="speech-text">今日はどんなひとときにしたい？<br>シーンを選んでね✨</div>
     </div>
   </div>
+  <div class="steps">
+    <div class="dot active" id="dot0"></div>
+    <div class="dot" id="dot1"></div>
+    <div class="dot" id="dot2"></div>
+  </div>
+
+  <!-- パネル0：シーン -->
+  <div class="panel show" id="panel-scene">
+    <div class="sec-title"><em>✦</em> シーンを選んでね <em>✦</em></div>
+    <div class="scene-grid">
+      <div class="scene-card" id="sc-ojosama"><img src="scene-ojosama.png" alt="お嬢様"><div class="s-label">✨ お嬢様のティータイム</div></div>
+      <div class="scene-card" id="sc-rain">   <img src="scene-rain.png"    alt="雨の日"><div class="s-label">🌧 雨の日のティータイム</div></div>
+      <div class="scene-card" id="sc-forest"> <img src="scene-forest.png"  alt="妖精の森"><div class="s-label">🌿 妖精の森のティータイム</div></div>
+      <div class="scene-card" id="sc-night">  <img src="scene-night.png"   alt="夜のひとり時間"><div class="s-label">🌙 夜のひとり時間</div></div>
+    </div>
+    <button class="btn-main" id="btn-scene-next" disabled>次へ — お茶を選ぶ</button>
+  </div>
+
+  <!-- パネル1：茶葉 -->
+  <div class="panel" id="panel-tea">
+    <div class="sec-title"><em>✦</em> お茶を選んでね <em>✦</em></div>
+    <div class="cat-tabs">
+      <button class="cat-btn on" id="cat-black">🫖 紅茶<br><small id="bk-cnt"></small></button>
+      <button class="cat-btn"    id="cat-herb" >🌿 ハーブティー<br><small id="hb-cnt"></small></button>
+    </div>
+    <div class="tea-grid">
+      <div class="tea-card" id="tc-earlgrey"   data-cat="black"><img src="tea-earlgrey.png"   alt="アールグレイ">  <div class="t-name">アールグレイ</div>      <div class="t-desc">ベルガモットの香り。少し大人の時間に</div></div>
+      <div class="tea-card" id="tc-darjeeling" data-cat="black"><img src="tea-darjeeling.png" alt="ダージリン">    <div class="t-name">ダージリン</div>        <div class="t-desc">繊細な香りが心を静かに整えてくれる</div></div>
+      <div class="tea-card" id="tc-assam"      data-cat="black"><img src="tea-assam.png"      alt="アッサム">      <div class="t-name">アッサム</div>          <div class="t-desc">コクのある味わいが心まであたためる</div></div>
+      <div class="tea-card" id="tc-ceylon"     data-cat="black"><img src="tea-ceylon.png"     alt="セイロン">      <div class="t-name">セイロン</div>          <div class="t-desc">すっきりとした飲み心地が気分を軽く</div></div>
+      <div class="tea-card" id="tc-lapsang"    data-cat="black"><img src="tea-lapsang.png"    alt="ラプサン">      <div class="t-name">ラプサンスーチョン</div><div class="t-desc">独特なスモーキーさ。少しだけ冒険を</div></div>
+      <div class="tea-card" id="tc-keemun"     data-cat="black"><img src="tea-keemun.png"     alt="キームン">      <div class="t-name">キームン</div>          <div class="t-desc">やわらかな余韻が心を落ち着かせる</div></div>
+      <div class="tea-card hide" id="tc-chamomile"  data-cat="herb"><img src="herb-chamomile.png"  alt="カモミール">  <div class="t-name">カモミール</div>  <div class="t-desc">やさしい香りが心をゆるめてくれる</div></div>
+      <div class="tea-card hide" id="tc-lavender"   data-cat="herb"><img src="herb-lavender.png"   alt="ラベンダー">  <div class="t-name">ラベンダー</div>  <div class="t-desc">やわらかな香りが疲れをほどく</div></div>
+      <div class="tea-card hide" id="tc-rose"       data-cat="herb"><img src="herb-rose.png"        alt="ローズ">      <div class="t-name">ローズ</div>      <div class="t-desc">華やかな香りが気持ちを明るくする</div></div>
+      <div class="tea-card hide" id="tc-lemongrass" data-cat="herb"><img src="herb-lemongrass.png"  alt="レモングラス"><div class="t-name">レモングラス</div><div class="t-desc">さっぱりした香りが空気を変える</div></div>
+      <div class="tea-card hide" id="tc-mint"       data-cat="herb"><img src="herb-mint.png"        alt="ミント">      <div class="t-name">ミント</div>      <div class="t-desc">爽やかな風みたいな心地よさ</div></div>
+      <div class="tea-card hide" id="tc-linden"     data-cat="herb"><img src="herb-linden.png"      alt="リンデン">    <div class="t-name">リンデン</div>    <div class="t-desc">やさしいぬくもりが心を包み込む</div></div>
+      <div class="tea-card hide" id="tc-rosehip"    data-cat="herb"><img src="herb-rosehip.png"     alt="ローズヒップ"><div class="t-name">ローズヒップ</div><div class="t-desc">ほんのり酸味が体をシャキッとさせる</div></div>
+      <div class="tea-card hide" id="tc-hibiscus"   data-cat="herb"><img src="herb-hibiscus.png"    alt="ハイビスカス"><div class="t-name">ハイビスカス</div><div class="t-desc">鮮やかな味わいが芯の強さをくれる</div></div>
+    </div>
+    <button class="btn-main" id="btn-tea-next" disabled>ティータイムをはじめる</button>
+    <button class="btn-sub"  id="btn-back-scene">← シーンを選び直す</button>
+  </div>
+
+  <!-- パネル2：結果 -->
+  <div class="panel" id="panel-result">
+    <div class="result-wrap" id="result-wrap">
+      <img id="result-bg-img" src="" alt="結果" class="result-bg">
+      <canvas id="fx-canvas"></canvas>
+      <div class="msg-bubble">
+        <div class="msg-tea-name" id="msg-tea-name"></div>
+        <div class="msg-text" id="msg-text"></div>
+      </div>
+      <img id="fairy-img" class="fairy-overlay" src="" alt="妖精">
+      <div class="sub-msg-wrap">
+        <div class="sub-msg-text" id="sub-msg-text"></div>
+      </div>
+    </div>
+    </div>
+    <div class="result-bar">
+      <div class="res-label">— Your Tea Time —</div>
+      <div class="res-pills">
+        <div class="res-pill"><span>SCENE </span><span id="res-scene"></span></div>
+        <div class="res-pill"><span>TEA </span><span id="res-tea"></span></div>
+      </div>
+      <button class="btn-main" id="btn-reset">✦ もう一度選ぶ ✦</button>
+    </div>
+  </div>
+
 </div>
-
-<!-- リセット確認モーダル -->
-<div class="modal-overlay" id="modal-reset" style="display:none">
-  <div class="modal-box">
-    <div class="modal-title">🔄 はじめからにする？</div>
-    <div class="modal-sub" id="modal-reset-sub">この妖精とのきろくが消えちゃうよ😢<br>本当にやり直す？</div>
-    <div class="modal-btns">
-      <button class="modal-btn modal-btn-cancel" onclick="closeModal('modal-reset')">やめる</button>
-      <button class="modal-btn modal-btn-ok" id="modal-reset-ok" onclick="doReset()">やり直す</button>
-    </div>
-  </div>
-</div>
-
-<!-- 妖精選択モーダル -->
-<div class="modal-overlay" id="modal-select" style="display:none">
-  <div class="modal-box">
-    <div class="modal-title">🧚 どの妖精にする？</div>
-    <div class="modal-sub">解放済みの妖精から選んでね✨</div>
-    <div class="select-grid" id="select-grid"></div>
-    <div class="modal-btns">
-      <button class="modal-btn modal-btn-cancel" onclick="closeModal('modal-select')">キャンセル</button>
-      <button class="modal-btn modal-btn-ok" id="select-ok-btn" onclick="doSelectFairy()">このこにする！</button>
-    </div>
-  </div>
 </div>
 
 <script>
-const FAIRY_STAGES = [
-  {name:"たまご",minAge:0,maxAge:2},
-  {name:"ようせいのこ",minAge:2,maxAge:8},
-  {name:"ようせい",minAge:8,maxAge:20},
-  {name:"せいれい",minAge:20,maxAge:9999},
-];
+var SCENES={
+  ojosama:{label:"お嬢様のティータイム",result:"scene-ojosama-result.png"},
+  rain:   {label:"雨の日のティータイム",result:"scene-rain-result.png"},
+  forest: {label:"妖精の森のティータイム",result:"scene-forest-result.png"},
+  night:  {label:"夜のひとり時間",result:"scene-night-result.png"}
+};
+var TEAS={
+  earlgrey:  {cat:"black",name:"アールグレイ",img:"tea-earlgrey.png",sub:"あなたはもう十分、魅力的よ✨",
+    msg:"「少し大人の時間にしましょうか？」\n華やかな香りが、気分をやさしく引き上げてくれるね。\nいつもより、少しだけ特別な午後に。\nあなたはもう十分、魅力的よ✨"},
+  darjeeling:{cat:"black",name:"ダージリン",img:"tea-darjeeling.png",sub:"焦らなくて大丈夫、ちゃんと進んでるから🌿",
+    msg:"「ゆっくり味わうのが、いちばん贅沢ですのよ」\n繊細な香りが、心を静かに整えてくれる。\n穏やかな時間が、ここにあるね。\n焦らなくて大丈夫、ちゃんと進んでるから🌿"},
+  assam:     {cat:"black",name:"アッサム",img:"tea-assam.png",sub:"がんばってるね、ちゃんと伝わってるよ☁️",
+    msg:"「ほっとする時間、いっしょに過ごそう？」\nコクのある味わいが、心まであたためてくれる。\n包み込まれるような安心感。\nがんばってるね、ちゃんと伝わってるよ☁️"},
+  ceylon:    {cat:"black",name:"セイロン",img:"tea-ceylon.png",sub:"無理しなくても、そのままでいいんだよ✨",
+    msg:"「どんな時間にも、ちょうどいいね」\nすっきりとした飲み心地が、気分を軽くしてくれる。\n自然体でいられる、やさしいひととき。\n無理しなくても、そのままでいいんだよ✨"},
+  lapsang:   {cat:"black",name:"ラプサンスーチョン",img:"tea-lapsang.png",sub:"あなたの\"好き\"は、ちゃんと特別だよ🔥",
+    msg:"「この香り…ちょっとクセになるでしょ？」\n独特なスモーキーさが、いつもと違う感覚をくれる。\n少しだけ冒険する時間。\nあなたの好きは、ちゃんと特別だよ🔥"},
+  keemun:    {cat:"black",name:"キームン",img:"tea-keemun.png",sub:"自分のペースで、大丈夫だからね🌙",
+    msg:"「静かな時間も、悪くないよね」\nやわらかな余韻が、心を落ち着かせてくれる。\n深く、穏やかなひととき。\n自分のペースで、大丈夫だからね🌙"},
+  chamomile: {cat:"herb",name:"カモミール",img:"herb-chamomile.png",sub:"今日はゆっくりでいいよ🌙",
+    msg:"「ねむくなってきたら、少し休も…？」\nやさしい香りが、心をゆるめてくれる。\nふんわりほどける、安心の時間。\n今日はゆっくりでいいよ🌙"},
+  lavender:  {cat:"herb",name:"ラベンダー",img:"herb-lavender.png",sub:"ちゃんと休むのも、大事なことだよ💜",
+    msg:"「がんばりすぎちゃったね」\nやわらかな香りが、疲れをそっとほどいてくれる。\n静かに癒されるひととき。\nちゃんと休むのも、大事なことだよ💜"},
+  rose:      {cat:"herb",name:"ローズ",img:"herb-rose.png",sub:"もっと自信、持っていいんだからね🌹",
+    msg:"「あなたは、ちゃんと美しいよ」\n華やかな香りが、気持ちを明るくしてくれる。\n少しだけ自分を大切にしたくなる時間。\nもっと自信、持っていいんだからね🌹"},
+  lemongrass:{cat:"herb",name:"レモングラス",img:"herb-lemongrass.png",sub:"また新しく始めればいいよ✨",
+    msg:"「気分、ちょっと軽くしていこっ！」\nさっぱりした香りが、空気を変えてくれる。\nリフレッシュできるひととき。\nまた新しく始めればいいよ✨"},
+  mint:      {cat:"herb",name:"ミント",img:"herb-mint.png",sub:"大丈夫、まだまだいけるよ🌱",
+    msg:"「すっきりしたい？任せて！」\n爽やかな風みたいな心地よさ。\n気分がパッと晴れる時間。\n大丈夫、まだまだいけるよ🌱"},
+  linden:    {cat:"herb",name:"リンデン",img:"herb-linden.png",sub:"あなたはそのままで、ちゃんと大切だよ☀️",
+    msg:"「ここにいるだけで、いいんだよ」\nやさしいぬくもりが、心を包み込む。\n安心できる、あたたかな時間。\nあなたはそのままで、ちゃんと大切だよ☀️"},
+  rosehip:   {cat:"herb",name:"ローズヒップ",img:"herb-rosehip.png",sub:"今日もいいこと、きっとあるよ🍓",
+    msg:"「元気、ちょっと分けてあげる！」\nほんのり酸味が、体をシャキッとさせてくれる。\n明るく前向きなひととき。\n今日もいいこと、きっとあるよ🍓"},
+  hibiscus:  {cat:"herb",name:"ハイビスカス",img:"herb-hibiscus.png",sub:"あなたはもっと輝けるよ❤️",
+    msg:"「内側から、きれいになろ？」\n鮮やかな味わいが、気持ちを引き締めてくれる。\n芯のある美しさを感じる時間。\nあなたはもっと輝けるよ❤️"}
+};
+var FX={
+  ojosama:{colors:["#f5e0c0","#f8d0e0","#fff0d0","#f0d0f8"],shapes:["heart","star","circle"],count:28},
+  rain:   {colors:["#c0d8f0","#d0e8f8","#a0c0e8","#e0f0f8"],shapes:["drop","circle","sparkle"],count:22},
+  forest: {colors:["#c0e8c0","#d8f0c0","#a0d8a0","#f0f8d0"],shapes:["leaf","star","circle"],count:25},
+  night:  {colors:["#d0c0f8","#f0d8f8","#c0d0f8","#fff0c0"],shapes:["star","sparkle","circle"],count:30}
+};
 
-const FAIRY_TYPES = [
-  {id:"tiara", name:"ティアラ", color:"#c070f0",wingColor:"#d8a0e8",bodyColor:"#fff0f5",
-   unlockMsg:"はじめての妖精！", desc:"明るくて元気いっぱい！笑顔が太陽みたいな妖精✨",
-   check:(s)=>true},
-  {id:"luna",  name:"ルナ",    color:"#4060d0",wingColor:"#90b0ff",bodyColor:"#f0f0ff",
-   unlockMsg:"せいれいまで育てると解放", desc:"夜空と星を愛する、ミステリアスな月の妖精🌙",
-   check:(s)=>s.retired.some(r=>r.stage==="せいれい")},
-  {id:"rose",  name:"ローズ",  color:"#e03070",wingColor:"#ffb0c8",bodyColor:"#fff0f4",
-   unlockMsg:"3回育てると解放", desc:"おしゃれが大好き！バラの香りをまとう妖精🌹",
-   check:(s)=>s.retired.length>=2},
-  {id:"sol",   name:"ソル",    color:"#c07800",wingColor:"#ffe080",bodyColor:"#fffbf0",
-   unlockMsg:"20回あそぶと解放", desc:"遊ぶのが大好き！太陽みたいにあたたかい妖精☀️",
-   check:(s)=>s.totalPlayCount>=20},
-  {id:"aqua",  name:"アクア",  color:"#0090b0",wingColor:"#a0e0ff",bodyColor:"#f0fbff",
-   unlockMsg:"30回たべると解放", desc:"食いしん坊で好奇心旺盛！水の流れのような妖精💧",
-   check:(s)=>s.totalFeedCount>=30},
-  {id:"aurora",name:"オーロラ",color:"#9020c0",wingColor:"#d080ff",bodyColor:"#fdf0ff",
-   unlockMsg:"5回育てると解放", desc:"神秘的な七色の光をまとう、最高位の精霊✨🌈",
-   check:(s)=>s.retired.length>=4},
-];
+var curScene=null,curTea=null,curCat="black";
+var fxAnim=null,particles=[];
 
-// ---- 状態（2スロット） ----
-const makeNewFairy = (typeId="tiara") => ({
-  name: FAIRY_TYPES.find(f=>f.id===typeId)?.name || "ティアラ",
-  age:0,hunger:80,happiness:80,health:100,energy:100,
-  isSleeping:false,isSick:false,isAlive:true,fairyTypeId:typeId
-});
+window.onload=function(){
+  // 件数
+  var bk=0,hb=0;
+  for(var k in TEAS){if(TEAS[k].cat==="black")bk++;else hb++;}
+  document.getElementById("bk-cnt").textContent=bk+"種";
+  document.getElementById("hb-cnt").textContent=hb+"種";
 
-let slots = [makeNewFairy("tiara"), makeNewFairy("tiara")];
-let stats = {retired:[],totalPlayCount:0,totalFeedCount:0,unlockedIds:["tiara"]};
-let currentSlot = 0;
-let currentTab = "game";
-let tickIntervals = [null, null];
-let saveInterval = null;
-let lastTouchTime = 0;
-let selectedFairyId = null; // 妖精選択モーダル用
-let pendingSelectCallback = null; // 選択後のコールバック
+  // BGMトグルボタン
+  document.getElementById("bgm-toggle-btn").addEventListener("click", function(){ toggleBGM(); });
 
-const fairy = () => slots[currentSlot];
-const setFairy = (f) => { slots[currentSlot] = f; };
+  // 最初のタップでBGM開始（ブラウザ制限対応）
+  function startBGMOnce(){
+    if(!bgmStarted){ bgmStarted=true; startSelectBGM(); }
+    document.removeEventListener("click",startBGMOnce);
+    document.removeEventListener("touchend",startBGMOnce);
+  }
+  document.addEventListener("click",startBGMOnce);
+  document.addEventListener("touchend",startBGMOnce);
 
-// ---- LocalStorage ----
-const SAVE_KEY = "fairygame-v2";
-function saveGame() {
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify({slots,stats})); flashSaveToast(); } catch(e) {}
-}
-function loadGame() {
-  try {
-    const raw = localStorage.getItem(SAVE_KEY);
-    if (!raw) return false;
-    const d = JSON.parse(raw);
-    slots = d.slots; stats = d.stats;
-    return true;
-  } catch(e) { return false; }
-}
-
-// ---- ヘルパー ----
-function getFairyType(f) { return FAIRY_TYPES.find(t=>t.id===(f||fairy()).fairyTypeId)||FAIRY_TYPES[0]; }
-function getStage(f)     { const fa=f||fairy(); return FAIRY_STAGES.find(s=>fa.age>=s.minAge&&fa.age<s.maxAge)||FAIRY_STAGES[3]; }
-function getMood(f) {
-  const fa=f||fairy();
-  if(!fa.isAlive)   return "sad";
-  if(fa.isSleeping) return "sleepy";
-  if(fa.isSick)     return "sick";
-  if(fa.hunger<20||fa.energy<20) return "hungry";
-  if(fa.happiness<30) return "sad";
-  if(fa.happiness>70&&fa.hunger>60) return "happy";
-  return "normal";
-}
-
-// ---- SVGスプライト ----
-function makeFairySVG(mood, age, ft) {
-  const c=ft.color,wc=ft.wingColor,bc=ft.bodyColor;
-  const stageIdx=FAIRY_STAGES.findIndex(s=>age>=s.minAge&&age<s.maxAge);
-  const idx=Math.min(stageIdx<0?3:stageIdx,3);
-
-  // たまご専用：つぶらなまん丸の瞳
-  const eggEyes=(cx,cy)=>{
-    if(mood==="sleepy") return `
-      <path d="M${cx-10} ${cy} Q${cx-7} ${cy-2.5} ${cx-3} ${cy}" stroke="${c}" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <path d="M${cx+3} ${cy} Q${cx+7} ${cy-2.5} ${cx+10} ${cy}" stroke="${c}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
-    const shine=mood==="happy"
-      ?`<circle cx="${cx-7.2}" cy="${cy-1.2}" r="1.1" fill="white"/><circle cx="${cx+7.2}" cy="${cy-1.2}" r="1.1" fill="white"/>`
-      :`<circle cx="${cx-7.5}" cy="${cy-1}" r="0.9" fill="white"/><circle cx="${cx+6.8}" cy="${cy-1}" r="0.9" fill="white"/>`;
-    return `
-      <circle cx="${cx-7}" cy="${cy}" r="5" fill="white"/>
-      <circle cx="${cx+7}" cy="${cy}" r="5" fill="white"/>
-      <circle cx="${cx-7}" cy="${cy+0.5}" r="3.5" fill="${c}"/>
-      <circle cx="${cx+7}" cy="${cy+0.5}" r="3.5" fill="${c}"/>
-      <circle cx="${cx-7}" cy="${cy+0.5}" r="2" fill="#1a0820"/>
-      <circle cx="${cx+7}" cy="${cy+0.5}" r="2" fill="#1a0820"/>
-      ${shine}`;
-  };
-
-  const bigEyes=(cx,cy)=>{
-    if(mood==="sleepy") return `
-      <path d="M${cx-11} ${cy} Q${cx-7} ${cy-3} ${cx-2} ${cy}" stroke="${c}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-      <path d="M${cx+2} ${cy} Q${cx+7} ${cy-3} ${cx+11} ${cy}" stroke="${c}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
-    const shine=mood==="happy"
-      ?`<circle cx="${cx-7}" cy="${cy-1}" r="1.2" fill="white"/><circle cx="${cx+7}" cy="${cy-1}" r="1.2" fill="white"/>`
-      :`<circle cx="${cx-7.5}" cy="${cy-1}" r="1" fill="white"/><circle cx="${cx+6.5}" cy="${cy-1}" r="1" fill="white"/>`;
-    return `
-      <ellipse cx="${cx-7}" cy="${cy}" rx="4.5" ry="5.5" fill="white"/>
-      <ellipse cx="${cx+7}" cy="${cy}" rx="4.5" ry="5.5" fill="white"/>
-      <ellipse cx="${cx-7}" cy="${cy+0.5}" rx="3.2" ry="4" fill="${c}"/>
-      <ellipse cx="${cx+7}" cy="${cy+0.5}" rx="3.2" ry="4" fill="${c}"/>
-      <ellipse cx="${cx-7}" cy="${cy+0.5}" rx="1.8" ry="2.2" fill="#1a0820"/>
-      <ellipse cx="${cx+7}" cy="${cy+0.5}" rx="1.8" ry="2.2" fill="#1a0820"/>
-      ${shine}
-      <path d="M${cx-12} ${cy-4} Q${cx-7} ${cy-8} ${cx-1} ${cy-4}" stroke="${c}" stroke-width="1.2" fill="none" opacity="0.7"/>
-      <path d="M${cx+1} ${cy-4} Q${cx+7} ${cy-8} ${cx+12} ${cy-4}" stroke="${c}" stroke-width="1.2" fill="none" opacity="0.7"/>`;
-  };
-
-  const chibiMouth=(cx,cy)=>{
-    if(mood==="happy")  return `<path d="M${cx-4} ${cy} Q${cx} ${cy+4} ${cx+4} ${cy}" stroke="${c}" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M${cx-2} ${cy+2} Q${cx} ${cy+4.5} ${cx+2} ${cy+2}" fill="${c}" opacity="0.3"/>`;
-    if(mood==="sad")    return `<path d="M${cx-4} ${cy+3} Q${cx} ${cy} ${cx+4} ${cy+3}" stroke="${c}" stroke-width="1.8" fill="none" stroke-linecap="round"/>`;
-    if(mood==="sick")   return `<path d="M${cx-3} ${cy+2} Q${cx} ${cy+4} ${cx+3} ${cy+2}" stroke="${c}" stroke-width="1.5" fill="none"/><text x="${cx+6}" y="${cy-6}" font-size="8">💊</text>`;
-    if(mood==="hungry") return `<ellipse cx="${cx}" cy="${cy+2}" rx="3" ry="2" fill="${c}" opacity="0.4"/>`;
-    return `<path d="M${cx-3} ${cy+1} Q${cx} ${cy+3} ${cx+3} ${cy+1}" stroke="${c}" stroke-width="1.5" fill="none" stroke-linecap="round"/>`;
-  };
-
-  const wings=(op=0.82)=>`
-    <path d="M50 42 C28 30 10 38 18 52 C26 62 42 56 50 52" fill="${wc}" opacity="${op}" stroke="${wc}" stroke-width="0.8"/>
-    <path d="M50 42 C72 30 90 38 82 52 C74 62 58 56 50 52" fill="${wc}" opacity="${op}" stroke="${wc}" stroke-width="0.8"/>
-    <path d="M50 52 C34 50 22 60 28 68 C34 74 44 68 50 62" fill="${wc}" opacity="${op*0.7}" stroke="${wc}" stroke-width="0.7"/>
-    <path d="M50 52 C66 50 78 60 72 68 C66 74 56 68 50 62" fill="${wc}" opacity="${op*0.7}" stroke="${wc}" stroke-width="0.7"/>
-    <path d="M50 42 C33 31 12 36 20 50" stroke="white" stroke-width="1" fill="none" opacity="0.5"/>
-    <path d="M50 42 C67 31 88 36 80 50" stroke="white" stroke-width="1" fill="none" opacity="0.5"/>`;
-
-  const ribbon=(cx,cy,col)=>`
-    <path d="M${cx-8} ${cy-3} L${cx-1} ${cy} L${cx-8} ${cy+3} Z" fill="${col}" opacity="0.9"/>
-    <path d="M${cx+8} ${cy-3} L${cx+1} ${cy} L${cx+8} ${cy+3} Z" fill="${col}" opacity="0.9"/>
-    <circle cx="${cx}" cy="${cy}" r="2.5" fill="${col}"/>
-    <circle cx="${cx}" cy="${cy}" r="1.2" fill="white" opacity="0.6"/>`;
-
-  const frills=(cx,cy,w,col)=>`
-    <path d="M${cx-w} ${cy} Q${cx-w*0.6} ${cy+6} ${cx-w*0.2} ${cy} Q${cx+w*0.2} ${cy+6} ${cx+w*0.6} ${cy} Q${cx+w*0.8} ${cy+6} ${cx+w} ${cy}" fill="${col}" opacity="0.5" stroke="${col}" stroke-width="0.5"/>`;
-
-  const bodies=[
-    `<ellipse cx="50" cy="60" rx="20" ry="24" fill="${bc}" stroke="${wc}" stroke-width="2"/>
-     ${eggEyes(50,59)}${chibiMouth(50,67)}
-     <ellipse cx="42" cy="64" rx="2.5" ry="1.5" fill="${c}" opacity="0.3"/>
-     <ellipse cx="58" cy="64" rx="2.5" ry="1.5" fill="${c}" opacity="0.3"/>`,
-    `${wings(0.7)}
-     <ellipse cx="50" cy="66" rx="11" ry="10" fill="${c}" opacity="0.9"/>
-     ${frills(50,73,13,wc)}
-     <ellipse cx="50" cy="66" rx="9" ry="8" fill="${bc}" stroke="${wc}" stroke-width="1"/>
-     <circle cx="50" cy="46" r="13" fill="${bc}" stroke="${wc}" stroke-width="1.2"/>
-     ${bigEyes(50,44)}${chibiMouth(50,52)}
-     <ellipse cx="44" cy="50" rx="2.2" ry="1.4" fill="${c}" opacity="0.3"/>
-     <ellipse cx="56" cy="50" rx="2.2" ry="1.4" fill="${c}" opacity="0.3"/>
-     ${ribbon(50,34,c)}`,
-    `${wings(0.85)}
-     <path d="M38 58 Q36 72 34 78 Q50 82 66 78 Q64 72 62 58 Z" fill="${c}" opacity="0.9"/>
-     ${frills(50,76,16,wc)}${frills(50,70,14,'white')}
-     <ellipse cx="50" cy="60" rx="10" ry="5" fill="${bc}" stroke="${wc}" stroke-width="1"/>
-     <rect x="43" y="56" width="14" height="10" rx="5" fill="${bc}" stroke="${wc}" stroke-width="1"/>
-     <circle cx="50" cy="41" r="14" fill="${bc}" stroke="${wc}" stroke-width="1.2"/>
-     ${bigEyes(50,39)}${chibiMouth(50,48)}
-     <ellipse cx="43" cy="45" rx="2.5" ry="1.5" fill="${c}" opacity="0.3"/>
-     <ellipse cx="57" cy="45" rx="2.5" ry="1.5" fill="${c}" opacity="0.3"/>
-     ${ribbon(50,28,c)}
-     <circle cx="43" cy="59" r="1.5" fill="${wc}" opacity="0.8"/>
-     <circle cx="57" cy="59" r="1.5" fill="${wc}" opacity="0.8"/>`,
-    `${wings(0.9)}
-     <path d="M36 55 Q33 70 30 80 Q50 86 70 80 Q67 70 64 55 Z" fill="${c}" opacity="0.95"/>
-     ${frills(50,79,20,wc)}${frills(50,73,18,'white')}${frills(50,67,15,wc)}
-     <ellipse cx="50" cy="57" rx="11" ry="5" fill="${bc}" stroke="${wc}" stroke-width="1"/>
-     <rect x="42" y="53" width="16" height="10" rx="5" fill="${bc}" stroke="${wc}" stroke-width="1"/>
-     <circle cx="50" cy="37" r="15" fill="${bc}" stroke="${wc}" stroke-width="1.2"/>
-     ${bigEyes(50,35)}${chibiMouth(50,44)}
-     <ellipse cx="43" cy="41" rx="2.8" ry="1.6" fill="${c}" opacity="0.3"/>
-     <ellipse cx="57" cy="41" rx="2.8" ry="1.6" fill="${c}" opacity="0.3"/>
-     <path d="M40 24 L43 18 L47 22 L50 15 L53 22 L57 18 L60 24 Z" fill="#ffd700" opacity="0.95"/>
-     <circle cx="50" cy="24" r="2" fill="white" opacity="0.8"/>
-     <circle cx="43" cy="24" r="1.5" fill="${wc}" opacity="0.9"/>
-     <circle cx="57" cy="24" r="1.5" fill="${wc}" opacity="0.9"/>
-     ${ribbon(50,53,wc)}
-     <circle cx="44" cy="57" r="1.8" fill="${wc}" opacity="0.9"/>
-     <circle cx="56" cy="57" r="1.8" fill="${wc}" opacity="0.9"/>
-     <circle cx="50" cy="55" r="1.5" fill="white" opacity="0.7"/>`,
-  ];
-
-  return `<svg viewBox="0 0 100 92" width="165" height="152" xmlns="http://www.w3.org/2000/svg">
-    <defs><filter id="gf"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-    <ellipse cx="50" cy="88" rx="24" ry="4" fill="${wc}" opacity="0.25"/>
-    <g filter="url(#gf)">${bodies[idx]}</g>
-  </svg>`;
-}
-
-function makeMiniSVG(ft) {
-  const c=ft.color,wc=ft.wingColor,bc=ft.bodyColor;
-  return `<svg viewBox="0 0 100 92" width="60" height="55" xmlns="http://www.w3.org/2000/svg">
-    <ellipse cx="50" cy="88" rx="20" ry="3.5" fill="${wc}" opacity="0.25"/>
-    <path d="M50 42 C28 30 10 38 18 52 C26 62 42 56 50 52" fill="${wc}" opacity="0.8"/>
-    <path d="M50 42 C72 30 90 38 82 52 C74 62 58 56 50 52" fill="${wc}" opacity="0.8"/>
-    <path d="M50 52 C34 50 22 60 28 68 C34 74 44 68 50 62" fill="${wc}" opacity="0.55"/>
-    <path d="M50 52 C66 50 78 60 72 68 C66 74 56 68 50 62" fill="${wc}" opacity="0.55"/>
-    <path d="M38 58 Q36 72 34 78 Q50 82 66 78 Q64 72 62 58 Z" fill="${c}" opacity="0.9"/>
-    <rect x="43" y="54" width="14" height="10" rx="5" fill="${bc}" stroke="${wc}" stroke-width="1"/>
-    <circle cx="50" cy="40" r="14" fill="${bc}" stroke="${wc}" stroke-width="1.2"/>
-    <ellipse cx="44" cy="39" rx="4" ry="5" fill="white"/>
-    <ellipse cx="56" cy="39" rx="4" ry="5" fill="white"/>
-    <ellipse cx="44" cy="40" rx="2.8" ry="3.5" fill="${c}"/>
-    <ellipse cx="56" cy="40" rx="2.8" ry="3.5" fill="${c}"/>
-    <ellipse cx="44" cy="40" rx="1.5" ry="2" fill="#1a0820"/>
-    <ellipse cx="56" cy="40" rx="1.5" ry="2" fill="#1a0820"/>
-    <circle cx="42.5" cy="38.5" r="1" fill="white"/>
-    <circle cx="54.5" cy="38.5" r="1" fill="white"/>
-    <path d="M46 47 Q50 51 54 47" stroke="${c}" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-    <path d="M42 27 L49 30 L42 33 Z" fill="${c}" opacity="0.9"/>
-    <path d="M58 27 L51 30 L58 33 Z" fill="${c}" opacity="0.9"/>
-    <circle cx="50" cy="30" r="2.2" fill="${c}"/>
-    <circle cx="50" cy="30" r="1" fill="white" opacity="0.6"/>
-  </svg>`;
-}
-
-// ---- UI ----
-function barColor(v){return v>60?"#a855f7":v>30?"#f59e0b":"#ef4444";}
-function updateBar(id,valId,value){
-  const bar=document.getElementById(id),val=document.getElementById(valId);
-  if(!bar||!val)return;
-  bar.style.width=value+"%";
-  bar.style.background=`linear-gradient(90deg,${barColor(value)},${barColor(value)}99)`;
-  val.textContent=Math.round(value);
-}
-function setMessage(msg){
-  const el=document.getElementById("message-box");
-  if(!el)return;
-  el.textContent=msg;
-  el.classList.remove("msg-bubble");void el.offsetWidth;el.classList.add("msg-bubble");
-}
-
-function render(){
-  const f=fairy(),ft=getFairyType(f),stage=getStage(f),mood=getMood(f);
-
-  // ヘッダー
-  const header=document.getElementById("header");
-  if(header) header.style.background=`linear-gradient(135deg,${ft.wingColor},${ft.color})`;
-  document.getElementById("header-stage").textContent=stage.name;
-  document.getElementById("header-age").textContent="age "+f.age.toFixed(1);
-
-  // タブ
-  ["slot0","slot1","collection"].forEach(t=>{
-    const btn=document.getElementById("tab-"+t);if(!btn)return;
-    const isActive=(t==="slot0"&&currentSlot===0&&currentTab==="game")
-                 ||(t==="slot1"&&currentSlot===1&&currentTab==="game")
-                 ||(t==="collection"&&currentTab==="collection");
-    btn.style.background=isActive?"white":"#faf0ff";
-    btn.style.color=isActive?ft.color:"#b090c0";
-    btn.style.fontWeight=isActive?"700":"400";
-    btn.style.borderBottom=`2.5px solid ${isActive?ft.color:"transparent"}`;
-  });
-  // スロットタブのアイコンを妖精の状態で更新
-  slots.forEach((s,i)=>{
-    const btn=document.getElementById("tab-slot"+i);
-    if(btn) btn.innerHTML=(s.isAlive?"🧚":"👼")+" 妖精"+(i+1);
+  // シーンカード
+  ["ojosama","rain","forest","night"].forEach(function(id){
+    document.getElementById("sc-"+id).addEventListener("click",function(){selScene(id);});
   });
 
-  // 名前
-  const nd=document.getElementById("name-display");
-  if(nd){nd.textContent=f.name;nd.style.color=ft.color;nd.style.borderColor=ft.wingColor;}
-  document.getElementById("name-ok-btn").style.background=ft.color;
-  document.getElementById("name-input").style.borderColor=ft.wingColor;
+  // 次へ（シーン）
+  document.getElementById("btn-scene-next").addEventListener("click",function(){goTea();});
 
-  // スプライト
-  const wrap=document.getElementById("fairy-sprite-wrap");
-  if(wrap) wrap.innerHTML=f.isAlive?makeFairySVG(mood,f.age,ft):`<div style="font-size:60px;text-align:center">👼</div>`;
+  // カテゴリタブ
+  document.getElementById("cat-black").addEventListener("click",function(){setCat("black");});
+  document.getElementById("cat-herb").addEventListener("click",function(){setCat("herb");});
 
-  // グロー
-  const glow=document.getElementById("glow-circle");
-  if(glow) glow.style.background=`radial-gradient(circle,${ft.wingColor}40 0%,transparent 70%)`;
-
-  // ステータス
-  updateBar("bar-hunger","val-hunger",f.hunger);
-  updateBar("bar-happiness","val-happiness",f.happiness);
-  updateBar("bar-health","val-health",f.health);
-  updateBar("bar-energy","val-energy",f.energy);
-
-  // ボタン
-  const ab=document.getElementById("action-btns"),da=document.getElementById("dead-area");
-  if(f.isAlive){
-    ab.style.display="flex"; da.style.display="none";
-    ["btn-feed","btn-play","btn-sleep","btn-heal"].forEach(id=>{
-      const btn=document.getElementById(id);
-      btn.style.background=`linear-gradient(135deg,${ft.wingColor},${ft.color})`;
-      btn.style.boxShadow=`0 3px 10px ${ft.color}50`;
-      btn.style.color="white";
-    });
-    document.getElementById("btn-feed").disabled=f.isSleeping||f.hunger>90;
-    document.getElementById("btn-play").disabled=f.isSleeping||f.energy<10;
-    document.getElementById("btn-sleep").disabled=false;
-    document.getElementById("btn-heal").disabled=!f.isSick;
-    const bs=document.getElementById("btn-sleep");
-    bs.innerHTML=(f.isSleeping?"☀️":"🌙")+`<span class="lbl">${f.isSleeping?"おきる":"ねる"}</span>`;
-    const rb=document.getElementById("retry-btn");
-    rb.style.background=`linear-gradient(135deg,${ft.wingColor},${ft.color})`;
-  } else {
-    ab.style.display="none"; da.style.display="block";
-    document.getElementById("dead-msg").innerHTML=`${f.name}はてんごくへ…<br>またあそんでね 🌸`;
-    const rb=document.getElementById("retry-btn");
-    rb.style.background=`linear-gradient(135deg,${ft.wingColor},${ft.color})`;
-    rb.style.boxShadow=`0 3px 10px ${ft.color}60`;
+  // 茶葉カード
+  for(var tid in TEAS){
+    (function(id){
+      var el=document.getElementById("tc-"+id);
+      if(el) el.addEventListener("click",function(){selTea(id);});
+    })(tid);
   }
 
-  if(currentTab==="collection") renderCollection();
-}
+  // 次へ（茶葉）
+  document.getElementById("btn-tea-next").addEventListener("click",function(){goResult();});
 
-function renderCollection(){
-  const grid=document.getElementById("fairy-grid");if(!grid)return;
-  grid.innerHTML=FAIRY_TYPES.map(ft=>{
-    const unlocked=stats.unlockedIds.includes(ft.id);
-    return unlocked
-      ?`<div class="fairy-card" style="background:white;border:1.5px solid ${ft.wingColor};box-shadow:0 2px 10px ${ft.color}20">
-          ${makeMiniSVG(ft)}
-          <div class="fairy-card-name" style="color:${ft.color}">${ft.name}</div>
-          <div class="fairy-card-desc">${ft.desc}</div>
-          <div class="fairy-card-msg">${ft.unlockMsg}</div>
-        </div>`
-      :`<div class="fairy-card" style="background:#f5f0fa;border:1.5px solid #e0d0f0">
-          <div class="lock-icon">🔒</div>
-          <div class="lock-ques">???</div>
-          <div class="lock-hint">${ft.unlockMsg}</div>
-        </div>`;
-  }).join("");
+  // 戻る
+  document.getElementById("btn-back-scene").addEventListener("click",function(){goScene();});
 
-  const rs=document.getElementById("retired-section");
-  rs.innerHTML=stats.retired.length>0
-    ?`<div class="retired-title">🌸 そだてた妖精たち</div>`+
-      stats.retired.map(r=>{
-        const ft=FAIRY_TYPES.find(f=>f.id===r.fairyTypeId)||FAIRY_TYPES[0];
-        return `<div class="retired-item" style="border:1px solid ${ft.wingColor}">
-          <span style="font-size:18px">🧚</span>
-          <div><div class="retired-name" style="color:${ft.color}">${r.name}</div>
-          <div class="retired-info">${r.stage} · age ${r.age}</div></div>
-        </div>`;
-      }).join("")
-    :"";
+  // リセット
+  document.getElementById("btn-reset").addEventListener("click",function(){goReset();});
+};
 
-  document.getElementById("stats-box").innerHTML=
-    `<div>🎵 あそんだ回数: <b>${stats.totalPlayCount}</b>/20</div>
-     <div>🍓 たべた回数: <b>${stats.totalFeedCount}</b>/30</div>
-     <div>🧚 そだてた数: <b>${stats.retired.length}</b></div>`;
-}
-
-// ---- タブ・スロット ----
-function switchSlotTab(i, e){
-  if(e){e.preventDefault();const now=Date.now();if(now-lastTouchTime<300)return;lastTouchTime=now;}
-  currentSlot=i;
-  currentTab="game";
-  document.getElementById("panel-game").style.display="block";
-  document.getElementById("panel-collection").style.display="none";
-  render();
-  startTick(i);
-}
-
-function setTab(t){
-  currentTab=t;
-  document.getElementById("panel-game").style.display=t==="game"?"block":"none";
-  document.getElementById("panel-collection").style.display=t==="collection"?"block":"none";
-  render();
-}
-
-function switchSlot(i, e){
-  switchSlotTab(i, e);
-}
-
-// ---- 名前編集 ----
-function showNameEdit(){
-  document.getElementById("name-display").style.display="none";
-  document.getElementById("name-edit").style.display="flex";
-  document.getElementById("name-input").value=fairy().name;
-  document.getElementById("name-input").focus();
-}
-function saveName(){
-  const val=document.getElementById("name-input").value.trim();
-  if(val) slots[currentSlot].name=val;
-  document.getElementById("name-display").style.display="inline-block";
-  document.getElementById("name-edit").style.display="none";
-  saveGame(); render();
-}
-
-// ---- パーティクル ----
-function spawnParticles(emojis){
-  const c=document.getElementById("particles");if(!c)return;
-  c.innerHTML="";
-  emojis.forEach((e,i)=>{
-    const el=document.createElement("div");
-    el.className="particle";el.textContent=e;
-    el.style.left=(28+Math.random()*44)+"%";el.style.top="50%";
-    el.style.animationDelay=(i*0.15)+"s";
-    c.appendChild(el);
+function selScene(id){
+  curScene=id;
+  ["ojosama","rain","forest","night"].forEach(function(s){
+    document.getElementById("sc-"+s).className="scene-card"+(s===id?" on":"");
   });
-  setTimeout(()=>{if(c)c.innerHTML="";},2000);
+  document.getElementById("btn-scene-next").disabled=false;
 }
 
-// ---- アクション ----
-function noDouble(e){
-  e.preventDefault();
-  const now=Date.now();if(now-lastTouchTime<300)return true;
-  lastTouchTime=now;return false;
-}
-function handleFeed(e){
-  if(noDouble(e))return;
-  const f=fairy();if(!f.isAlive||f.isSleeping||f.hunger>90)return;
-  f.hunger=Math.min(100,f.hunger+30);f.happiness=Math.min(100,f.happiness+5);
-  stats.totalFeedCount++;
-  spawnParticles(["🍓","🍄","🌸"]);setMessage("もぐもぐ… おいしい！");sfx('feed');
-  checkUnlocks();saveGame();render();
-}
-function handlePlay(e){
-  if(noDouble(e))return;
-  const f=fairy();if(!f.isAlive||f.isSleeping||f.energy<10)return;
-  f.happiness=Math.min(100,f.happiness+25);f.energy=Math.max(0,f.energy-15);f.hunger=Math.max(0,f.hunger-5);
-  stats.totalPlayCount++;
-  spawnParticles(["🎵","🎶","🎠"]);setMessage("きゃっ！ たのしい！");sfx('play');
-  checkUnlocks();saveGame();render();
-}
-function handleSleep(e){
-  if(noDouble(e))return;
-  const f=fairy();if(!f.isAlive)return;
-  f.isSleeping=!f.isSleeping;
-  setMessage(f.isSleeping?"おやすみ… zzz":"おはよう！");sfx('sleep');
-  saveGame();render();
-}
-function handleHeal(e){
-  if(noDouble(e))return;
-  const f=fairy();if(!f.isAlive||!f.isSick)return;
-  f.isSick=false;f.health=Math.min(100,f.health+40);
-  spawnParticles(["💊","✨","💖"]);setMessage("げんきになったよ！ありがとう！");sfx('heal');
-  saveGame();render();
-}
-
-// ---- リセット ----
-function confirmReset(e){
-  if(e){e.preventDefault();const now=Date.now();if(now-lastTouchTime<300)return;lastTouchTime=now;}
-  const f=fairy(),ft=getFairyType(f);
-  document.getElementById("modal-reset-sub").textContent=
-    `${f.name}（${getStage(f).name}）とのきろくが消えちゃうよ😢\n本当にやり直す？`;
-  const okBtn=document.getElementById("modal-reset-ok");
-  okBtn.style.background=`linear-gradient(135deg,${ft.wingColor},${ft.color})`;
-  document.getElementById("modal-reset").style.display="flex";
-}
-function doReset(){
-  closeModal("modal-reset");
-  showFairySelect(true); // リセット後は選択へ
-}
-
-// ---- 妖精選択モーダル ----
-function showFairySelect(isReset=false){
-  selectedFairyId=null;
-  pendingSelectCallback=isReset?"reset":"retire";
-  const grid=document.getElementById("select-grid");
-  grid.innerHTML=stats.unlockedIds.map(id=>{
-    const ft=FAIRY_TYPES.find(f=>f.id===id);if(!ft)return"";
-    return `<div class="select-card" id="sc-${ft.id}"
-      style="background:white;border:1.5px solid ${ft.wingColor};color:${ft.color}"
-      onclick="selectFairyCard('${ft.id}')">
-      ${makeMiniSVG(ft)}
-      <div class="select-card-name" style="color:${ft.color}">${ft.name}</div>
-    </div>`;
-  }).join("");
-
-  const okBtn=document.getElementById("select-ok-btn");
-  okBtn.style.background="#e0d0f0";okBtn.style.color="#b090c0";
-
-  // 前の妖精を初期選択
-  const currentId=fairy().fairyTypeId;
-  if(stats.unlockedIds.includes(currentId)) selectFairyCard(currentId);
-
-  document.getElementById("modal-select").style.display="flex";
-}
-
-function selectFairyCard(id){
-  selectedFairyId=id;
-  document.querySelectorAll(".select-card").forEach(el=>el.style.outline="none");
-  const el=document.getElementById("sc-"+id);
-  if(el){
-    const ft=FAIRY_TYPES.find(f=>f.id===id);
-    el.style.outline=`3px solid ${ft?ft.color:"#c070f0"}`;
+function setCat(c){
+  curCat=c;curTea=null;
+  document.getElementById("cat-black").className="cat-btn"+(c==="black"?" on":"");
+  document.getElementById("cat-herb").className="cat-btn"+(c==="herb"?" on":"");
+  for(var tid in TEAS){
+    var el=document.getElementById("tc-"+tid);
+    if(!el)continue;
+    el.className="tea-card"+(TEAS[tid].cat===c?"":" hide");
   }
-  const okBtn=document.getElementById("select-ok-btn");
-  const ft=FAIRY_TYPES.find(f=>f.id===id);
-  if(ft){okBtn.style.background=`linear-gradient(135deg,${ft.wingColor},${ft.color})`;okBtn.style.color="white";}
+  document.getElementById("btn-tea-next").disabled=true;
 }
 
-function doSelectFairy(){
-  if(!selectedFairyId)return;
-  closeModal("modal-select");
-
-  if(pendingSelectCallback==="retire"){
-    // 現在の妖精を記録してから新しい妖精に
-    const f=fairy(),stage=getStage(f);
-    stats.retired.push({name:f.name,stage:stage.name,age:f.age.toFixed(1),fairyTypeId:f.fairyTypeId});
-    checkUnlocks();
+function selTea(id){
+  curTea=id;
+  for(var tid in TEAS){
+    var el=document.getElementById("tc-"+tid);
+    if(!el||el.classList.contains("hide"))continue;
+    el.className="tea-card"+(tid===id?" on":"");
   }
-
-  const ft=FAIRY_TYPES.find(f=>f.id===selectedFairyId)||FAIRY_TYPES[0];
-  slots[currentSlot]=makeNewFairy(selectedFairyId);
-  setMessage(`${ft.name}のたまごが うまれたよ！`);
-  saveGame();render();startTick(currentSlot);
+  document.getElementById("btn-tea-next").disabled=false;
 }
 
-// ---- アンロック ----
-function checkUnlocks(){
-  FAIRY_TYPES.forEach(ft=>{
-    if(!stats.unlockedIds.includes(ft.id)&&ft.check(stats)){
-      stats.unlockedIds.push(ft.id);showUnlockToast(ft);sfx('unlock');
-    }
+function updateDots(s){
+  [0,1,2].forEach(function(i){
+    document.getElementById("dot"+i).className="dot"+(i<s?" done":i===s?" active":"");
   });
 }
-function showUnlockToast(ft){
-  const t=document.getElementById("unlock-toast"),n=document.getElementById("unlock-toast-name");
-  t.style.border=`2px solid ${ft.color}`;t.style.boxShadow=`0 4px 20px ${ft.color}40`;
-  n.style.color=ft.color;n.textContent=ft.name+"がかいほうされた！";
-  t.style.display="block";setTimeout(()=>{t.style.display="none";},3500);
+function showPanel(id){
+  ["panel-scene","panel-tea","panel-result"].forEach(function(p){
+    document.getElementById(p).className="panel"+(p===id?" show":"");
+  });
 }
 
-// ---- モーダル ----
-function closeModal(id){document.getElementById(id).style.display="none";}
-
-// ---- セーブトースト ----
-let saveToastTimer=null;
-function flashSaveToast(){
-  const el=document.getElementById("save-toast");if(!el)return;
-  el.style.display="block";el.classList.remove("save-flash");void el.offsetWidth;el.classList.add("save-flash");
-  clearTimeout(saveToastTimer);saveToastTimer=setTimeout(()=>{el.style.display="none";},1500);
+function goTea(){
+  if(!curScene)return;
+  document.getElementById("speech-text").innerHTML=SCENES[curScene].label+"を選んだんだね✨<br>次は、一緒に飲むお茶を選んでね";
+  showPanel("panel-tea");updateDots(1);
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function goScene(){
+  showPanel("panel-scene");updateDots(0);
+  document.getElementById("speech-text").innerHTML="今日はどんなひとときにしたい？<br>シーンを選んでね✨";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function goResult(){
+  if(!curTea||!curScene)return;
+  var s=SCENES[curScene],t=TEAS[curTea];
+  document.getElementById("result-bg-img").src=s.result;
+  document.getElementById("fairy-img").src=t.img;
+  document.getElementById("msg-tea-name").textContent="— "+t.name+" —";
+  document.getElementById("msg-text").textContent=t.msg.split("\n")[0];
+  document.getElementById("sub-msg-text").textContent=t.sub||"";
+  document.getElementById("res-scene").textContent=s.label;
+  document.getElementById("res-tea").textContent=t.name;
+  document.getElementById("speech-text").innerHTML="素敵なティータイムを<br>お楽しみください✨";
+  showPanel("panel-result");updateDots(2);
+  window.scrollTo({top:0,behavior:"smooth"});
+  // シャラランサウンド → BGM切替
+  playSparkleSound();
+  setTimeout(function(){ startResultBGM(curScene); }, 900);
+  var img=document.getElementById("result-bg-img");
+  if(img.complete){startFX(curScene);}else{img.onload=function(){startFX(curScene);};}
+}
+function goReset(){
+  stopFX();stopAllBGM();curScene=null;curTea=null;curCat="black";
+  ["ojosama","rain","forest","night"].forEach(function(s){document.getElementById("sc-"+s).className="scene-card";});
+  for(var tid in TEAS){var el=document.getElementById("tc-"+tid);if(el)el.className="tea-card"+(TEAS[tid].cat==="black"?"":" hide");}
+  document.getElementById("cat-black").className="cat-btn on";
+  document.getElementById("cat-herb").className="cat-btn";
+  document.getElementById("btn-scene-next").disabled=true;
+  document.getElementById("btn-tea-next").disabled=true;
+  document.getElementById("speech-text").innerHTML="今日はどんなひとときにしたい？<br>シーンを選んでね✨";
+  showPanel("panel-scene");updateDots(0);
+  startSelectBGM();
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-// ---- ゲームティック（スロットごと） ----
-function startTick(slotIdx){
-  if(slotIdx===undefined) slotIdx=currentSlot;
-  clearInterval(tickIntervals[slotIdx]);
-  tickIntervals[slotIdx]=setInterval(()=>{
-    const f=slots[slotIdx];
-    if(!f.isAlive){clearInterval(tickIntervals[slotIdx]);if(slotIdx===currentSlot)render();return;}
-    if(f.isSleeping){
-      f.energy=Math.min(100,f.energy+8);f.hunger=Math.max(0,f.hunger-1);f.age+=0.1;
+// ===== BGM =====
+var bgmStarted = false;
+
+var bgmEnabled = true;
+
+function startSelectBGM(){
+  stopAllBGM();
+  if(!bgmEnabled) return;
+  var el = document.getElementById("bgm-select");
+  if(el){ el.volume=0.55; el.currentTime=0; el.play().catch(function(){}); }
+}
+function startResultBGM(scene){
+  stopAllBGM();
+  if(!bgmEnabled) return;
+  var id = "bgm-"+scene;
+  var el = document.getElementById(id);
+  if(el){ el.volume=0.6; el.currentTime=0; el.play().catch(function(){}); }
+}
+function stopAllBGM(){
+  ["bgm-select","bgm-ojosama","bgm-rain","bgm-forest","bgm-night"].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){el.pause();el.currentTime=0;}
+  });
+}
+function toggleBGM(){
+  bgmEnabled = !bgmEnabled;
+  var btn = document.getElementById("bgm-toggle-btn");
+  if(bgmEnabled){
+    btn.textContent = "🔊 BGM ON";
+    // 現在のパネルに合わせて再生再開
+    if(document.getElementById("panel-result").classList.contains("show")){
+      if(curScene) startResultBGM(curScene);
     } else {
-      f.hunger=Math.max(0,f.hunger-3);f.happiness=Math.max(0,f.happiness-2);f.energy=Math.max(0,f.energy-2);
-      if(f.isSick){f.health=Math.max(0,f.health-3);}
-      else if(f.hunger<10||f.energy<10){f.health=Math.max(0,f.health-5);}
-      else{f.health=Math.min(100,f.health+1);}
-      if(!f.isSick&&f.health<40&&Math.random()<0.1){
-        f.isSick=true;if(slotIdx===currentSlot)setMessage("🤒 からだがつらいよ…");
-      }
-      if(f.health<=0){f.isAlive=false;if(slotIdx===currentSlot){setMessage(f.name+"はてんごくへ…");sfx('dead');}}
-      f.age+=0.05;
+      startSelectBGM();
     }
-    if(slotIdx===currentSlot) render();
-  },2000);
-}
-
-// ---- サウンド ----
-let audioCtx = null;
-let bgmNodes = [];
-let bgmPlaying = false;
-let bgmLoopTimer = null;
-
-function getAudioCtx() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  return audioCtx;
-}
-
-// 単音を鳴らす
-function playNote(freq, startOffset, dur, wave='sine', vol=0.13) {
-  const c = getAudioCtx();
-  const osc = c.createOscillator();
-  const gain = c.createGain();
-  osc.type = wave;
-  osc.frequency.value = freq;
-  gain.gain.setValueAtTime(0, c.currentTime + startOffset);
-  gain.gain.linearRampToValueAtTime(vol, c.currentTime + startOffset + 0.02);
-  gain.gain.setValueAtTime(vol, c.currentTime + startOffset + dur - 0.05);
-  gain.gain.linearRampToValueAtTime(0, c.currentTime + startOffset + dur);
-  osc.connect(gain); gain.connect(c.destination);
-  osc.start(c.currentTime + startOffset);
-  osc.stop(c.currentTime + startOffset + dur + 0.05);
-  bgmNodes.push(osc);
-}
-
-// ---- ほのぼのBGM（途切れなしループ） ----
-const BGM_MELODY = [
-  [523,0],[659,0.4],[784,0.8],[659,1.2],
-  [523,1.6],[587,2.0],[698,2.4],[784,2.8],
-  [880,3.2],[784,3.6],[698,4.0],[659,4.4],
-  [523,4.8],[587,5.2],[523,5.6],[494,6.0],
-];
-const BGM_BASS = [
-  [262,0],[262,0.8],[294,1.6],[294,2.4],
-  [349,3.2],[330,4.0],[294,4.8],[262,5.6],
-];
-const BGM_LOOP_SEC = 6.5; // 1ループの長さ（秒）
-const BGM_SCHEDULE_AHEAD = 0.3; // 何秒先まで予約するか
-
-let bgmNextLoopTime = 0; // 次のループを開始すべきAudioContext時刻
-
-function scheduleBGMLoop(startTime) {
-  // このループ分の音を全部AudioContextの絶対時刻でスケジュール
-  const c = getAudioCtx();
-
-  BGM_MELODY.forEach(([f,t]) => {
-    const osc = c.createOscillator();
-    const gain = c.createGain();
-    const at = startTime + t;
-    osc.type = 'sine'; osc.frequency.value = f;
-    gain.gain.setValueAtTime(0, at);
-    gain.gain.linearRampToValueAtTime(0.12, at + 0.02);
-    gain.gain.setValueAtTime(0.12, at + 0.36);
-    gain.gain.linearRampToValueAtTime(0, at + 0.38);
-    osc.connect(gain); gain.connect(c.destination);
-    osc.start(at); osc.stop(at + 0.42);
-    bgmNodes.push(osc);
-  });
-
-  BGM_BASS.forEach(([f,t]) => {
-    const osc = c.createOscillator();
-    const gain = c.createGain();
-    const at = startTime + t;
-    osc.type = 'triangle'; osc.frequency.value = f;
-    gain.gain.setValueAtTime(0, at);
-    gain.gain.linearRampToValueAtTime(0.07, at + 0.02);
-    gain.gain.setValueAtTime(0.07, at + 0.72);
-    gain.gain.linearRampToValueAtTime(0, at + 0.75);
-    osc.connect(gain); gain.connect(c.destination);
-    osc.start(at); osc.stop(at + 0.80);
-    bgmNodes.push(osc);
-  });
-}
-
-function bgmScheduler() {
-  if (!bgmPlaying) return;
-  const c = getAudioCtx();
-  // 先読み範囲内のループをまとめて予約
-  while (bgmNextLoopTime < c.currentTime + BGM_SCHEDULE_AHEAD) {
-    scheduleBGMLoop(bgmNextLoopTime);
-    bgmNextLoopTime += BGM_LOOP_SEC;
-  }
-  // 古いノードをメモリから解放
-  bgmNodes = bgmNodes.filter(n => { try { return n.context.state !== 'closed'; } catch(e) { return false; } });
-  bgmLoopTimer = setTimeout(bgmScheduler, 100); // 100msごとにチェック
-}
-
-function startBGMLoop() {
-  const c = getAudioCtx();
-  bgmNextLoopTime = c.currentTime + 0.05; // 少し先から開始
-  bgmScheduler();
-}
-
-function stopBGM() {
-  bgmPlaying = false;
-  clearTimeout(bgmLoopTimer);
-  bgmNodes.forEach(n => { try { n.stop(); } catch(e) {} });
-  bgmNodes = [];
-}
-
-function toggleBGM(e) {
-  if (e) { e.preventDefault(); const now=Date.now(); if(now-lastTouchTime<300)return; lastTouchTime=now; }
-  if (bgmPlaying) {
-    stopBGM();
-    document.getElementById('bgm-btn').textContent = '🔇';
   } else {
-    bgmPlaying = true;
-    document.getElementById('bgm-btn').textContent = '🔊';
-    startBGMLoop();
+    btn.textContent = "🔇 BGM OFF";
+    stopAllBGM();
   }
 }
 
-// ---- 効果音 ----
-function sfx(type) {
-  try {
-    const c = getAudioCtx();
-    const plays = {
-      feed:  [[587,0,0.12,'sine',0.18],[784,0.1,0.12,'sine',0.15],[988,0.2,0.18,'sine',0.12]],
-      play:  [[784,0,0.08,'square',0.12],[988,0.09,0.08,'square',0.12],[1175,0.18,0.15,'square',0.10]],
-      sleep: [[523,0,0.25,'sine',0.14],[440,0.2,0.35,'sine',0.10]],
-      heal:  [[659,0,0.1,'sine',0.16],[784,0.1,0.1,'sine',0.16],[988,0.2,0.1,'sine',0.16],[1175,0.3,0.25,'sine',0.14]],
-      unlock:[[523,0,0.1,'sine',0.18],[659,0.1,0.1,'sine',0.18],[784,0.2,0.1,'sine',0.18],[1047,0.3,0.3,'sine',0.16]],
-      dead:  [[440,0,0.3,'sine',0.15],[392,0.25,0.3,'sine',0.13],[349,0.5,0.5,'sine',0.10]],
-    };
-    const notes = plays[type] || plays.feed;
-    notes.forEach(([f,t,d,w,v]) => {
-      const osc = c.createOscillator();
-      const gain = c.createGain();
-      osc.type = w; osc.frequency.value = f;
-      gain.gain.setValueAtTime(0, c.currentTime+t);
-      gain.gain.linearRampToValueAtTime(v, c.currentTime+t+0.02);
-      gain.gain.linearRampToValueAtTime(0, c.currentTime+t+d);
-      osc.connect(gain); gain.connect(c.destination);
-      osc.start(c.currentTime+t); osc.stop(c.currentTime+t+d+0.05);
+// ===== シャラランサウンド（控えめグリッサンド） =====
+var sfxCtx = null;
+function getSfxCtx(){
+  if(!sfxCtx) sfxCtx = new (window.AudioContext||window.webkitAudioContext)();
+  if(sfxCtx.state==="suspended") sfxCtx.resume();
+  return sfxCtx;
+}
+function playSparkleSound(){
+  try{
+    var ctx = getSfxCtx();
+    // シャラランランラン — 上昇するグリッサンド＋やわらかいベル余韻
+    var scale=[523,659,784,988,1175,1397,1568,1976,2093];
+    scale.forEach(function(freq,i){
+      var osc=ctx.createOscillator();
+      var gain=ctx.createGain();
+      var t=ctx.currentTime+i*0.07;
+      osc.type="sine";
+      osc.frequency.setValueAtTime(freq,t);
+      gain.gain.setValueAtTime(0,t);
+      gain.gain.linearRampToValueAtTime(0.10,t+0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001,t+0.35);
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.start(t);osc.stop(t+0.38);
     });
-  } catch(e) {}
+    // 最後にやさしいベル余韻
+    [2093,1568,2637].forEach(function(freq,i){
+      var osc=ctx.createOscillator();
+      var gain=ctx.createGain();
+      var t=ctx.currentTime+0.62+i*0.12;
+      osc.type="triangle";
+      osc.frequency.value=freq;
+      gain.gain.setValueAtTime(0.07,t);
+      gain.gain.exponentialRampToValueAtTime(0.001,t+0.55);
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.start(t);osc.stop(t+0.6);
+    });
+  }catch(e){}
 }
 
-
-function setupBg(){
-  const sizes=[110,75,55,95,65],colors=["#e8c0ff28","#ffd0f025","#c0e8ff25","#ffc0e825","#d0ffd020"],
-    tops=["8%","58%","28%","78%","3%"],lefts=["4%","78%","68%","12%","88%"],speeds=[4.2,5.1,3.6,6,4.8];
-  for(let i=0;i<5;i++){
-    const el=document.getElementById("bg"+i);
-    el.style.width=sizes[i]+"px";el.style.height=sizes[i]+"px";el.style.background=colors[i];
-    el.style.top=tops[i];el.style.left=lefts[i];el.style.animation=`shimmer ${speeds[i]}s ease-in-out infinite`;
+function startFX(scene){
+  var canvas=document.getElementById("fx-canvas");
+  var wrap=document.getElementById("result-wrap");
+  canvas.width=wrap.offsetWidth;canvas.height=wrap.offsetHeight;
+  particles=[];
+  var th=FX[scene]||FX.ojosama;
+  for(var i=0;i<th.count;i++){
+    particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,
+      vx:(Math.random()-0.5)*0.6,vy:-0.4-Math.random()*0.8,
+      size:4+Math.random()*8,color:th.colors[Math.floor(Math.random()*th.colors.length)],
+      shape:th.shapes[Math.floor(Math.random()*th.shapes.length)],
+      alpha:0.6+Math.random()*0.4,life:Math.random(),decay:0.003+Math.random()*0.004,
+      rot:Math.random()*Math.PI*2,rotV:(Math.random()-0.5)*0.05});
   }
+  if(fxAnim)cancelAnimationFrame(fxAnim);
+  animFX();
 }
-
-// ---- 起動 ----
-window.addEventListener("DOMContentLoaded",()=>{
-  setupBg();
-  const loaded=loadGame();
-  // slotsが1個しかない古いセーブデータ対応
-  if(!Array.isArray(slots)||slots.length<2){
-    const existing=Array.isArray(slots)?slots[0]:slots;
-    slots=[existing||makeNewFairy("tiara"),makeNewFairy("tiara")];
+function animFX(){
+  var canvas=document.getElementById("fx-canvas");
+  if(!canvas||!document.getElementById("panel-result").classList.contains("show")){stopFX();return;}
+  var ctx=canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(var i=0;i<particles.length;i++){
+    var p=particles[i];
+    p.x+=p.vx;p.y+=p.vy;p.life-=p.decay;p.rot+=p.rotV;
+    if(p.life<=0){p.x=Math.random()*canvas.width;p.y=canvas.height+10;p.life=0.7+Math.random()*0.3;}
+    ctx.save();ctx.globalAlpha=p.life*p.alpha;ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillStyle=p.color;
+    if(p.shape==="heart"){ctx.beginPath();var s=p.size;ctx.moveTo(0,-s*0.3);ctx.bezierCurveTo(s*0.5,-s*0.8,s,-s*0.2,0,s*0.5);ctx.bezierCurveTo(-s,-s*0.2,-s*0.5,-s*0.8,0,-s*0.3);ctx.fill();}
+    else if(p.shape==="star"){dStar(ctx,0,0,p.size*0.4,p.size,5);ctx.fill();}
+    else if(p.shape==="sparkle"){ctx.strokeStyle=p.color;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-p.size,0);ctx.lineTo(p.size,0);ctx.stroke();ctx.beginPath();ctx.moveTo(0,-p.size);ctx.lineTo(0,p.size);ctx.stroke();}
+    else if(p.shape==="drop"){ctx.beginPath();ctx.moveTo(0,-p.size);ctx.bezierCurveTo(p.size*0.6,-p.size*0.2,p.size*0.6,p.size*0.5,0,p.size);ctx.bezierCurveTo(-p.size*0.6,p.size*0.5,-p.size*0.6,-p.size*0.2,0,-p.size);ctx.fill();}
+    else if(p.shape==="leaf"){ctx.beginPath();ctx.ellipse(0,0,p.size*0.4,p.size,0,0,Math.PI*2);ctx.fill();}
+    else{ctx.beginPath();ctx.arc(0,0,p.size*0.5,0,Math.PI*2);ctx.fill();}
+    ctx.restore();
   }
-  document.getElementById("loading").style.display="none";
-  document.getElementById("app").style.display="block";
-  setMessage(loaded?"おかえり！✨ つづきからだよ":"ようせいのたまごが うまれたよ！");
-  setTab("game");
-  startTick(0);startTick(1);
-  saveInterval=setInterval(()=>{saveGame();},10000);
-});
+  fxAnim=requestAnimationFrame(animFX);
+}
+function dStar(ctx,cx,cy,r,R,n){ctx.beginPath();for(var i=0;i<n*2;i++){var rad=i%2===0?R:r,ang=Math.PI/n*i-Math.PI/2;if(i===0)ctx.moveTo(cx+rad*Math.cos(ang),cy+rad*Math.sin(ang));else ctx.lineTo(cx+rad*Math.cos(ang),cy+rad*Math.sin(ang));}ctx.closePath();}
+function stopFX(){if(fxAnim)cancelAnimationFrame(fxAnim);fxAnim=null;particles=[];var c=document.getElementById("fx-canvas");if(c){var ctx=c.getContext("2d");ctx.clearRect(0,0,c.width,c.height);}}
 </script>
-</div>
 </body>
 </html>
