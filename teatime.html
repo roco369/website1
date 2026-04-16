@@ -114,7 +114,7 @@
     <div class="h-en">Tea Time Experience</div>
     <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
       <div class="h-ja">あなたのティータイム</div>
-      <button class="bgm-btn" id="bgm-toggle-btn">🔊</button>
+      <button class="bgm-btn off" id="bgm-toggle-btn">🔇</button>
     </div>
   </div>
   <div class="heroine-area">
@@ -391,7 +391,7 @@ function goReset(){
 
 // ===== サウンド管理（マナーモード対応） =====
 var bgmStarted = false;
-var bgmEnabled = true;
+var bgmEnabled = false;
 var sfxCtx = null;
 
 // AudioContextを取得（マナーモード時はsuspendedのまま）
