@@ -2,26 +2,20 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Asuka Cosmos - Audio Fixed</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Asuka Cosmos - Mobile Fixed</title>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #050510; }
-        canvas { display: block; touch-action: none; transition: background 3s; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #050510; -webkit-text-size-adjust: 100%; }
+        canvas { display: block; touch-action: none; }
         .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; 
                     flex-direction: column; justify-content: center; align-items: center; 
-                    font-family: serif; z-index: 100; transition: 1s; }
+                    font-family: serif; z-index: 100; transition: opacity 1s; }
         #startScreen { background: radial-gradient(circle, #1a1a3a 0%, #050510 100%); color: white; }
-        h1 { font-size: 3rem; margin: 0; letter-spacing: 0.5rem; text-shadow: 0 0 15px #FFD700; }
-        .btn { margin-top: 30px; padding: 15px 40px; font-size: 1.2rem; background: transparent; color: white; 
-               border: 1px solid white; cursor: pointer; transition: 0.3s; font-family: serif; }
-        .btn:hover { background: rgba(255,255,255,0.2); box-shadow: 0 0 20px white; }
-        
-        /* スコア表示（復活！） */
-        #ui { position: absolute; top: 20px; left: 20px; color: white; font-family: serif; pointer-events: none; z-index: 10; font-size: 1.6rem; text-shadow: 0 0 5px #fff; display: none; }
-        
-        #audioControl { position: absolute; top: 20px; right: 20px; z-index: 110; cursor: pointer; background: rgba(255,255,255,0.1); border: 1px solid white; color: white; padding: 8px 15px; font-family: serif; font-size: 0.9rem; }
-        #msg { position: absolute; bottom: 15%; width: 100%; text-align: center; color: rgba(255,255,255,0); 
-               font-family: serif; font-size: 1.5rem; transition: 1.5s; text-shadow: 0 0 10px white; z-index: 10; }
+        h1 { font-size: 2.5rem; margin: 0; letter-spacing: 0.3rem; text-shadow: 0 0 15px #FFD700; text-align: center; }
+        .btn { margin-top: 30px; padding: 15px 40px; font-size: 1.1rem; background: transparent; color: white; 
+               border: 1px solid white; cursor: pointer; transition: 0.3s; font-family: serif; -webkit-appearance: none; }
+        #ui { position: absolute; top: 20px; left: 20px; color: white; font-family: serif; pointer-events: none; z-index: 10; font-size: 1.2rem; display: none; }
+        #audioControl { position: absolute; top: 20px; right: 20px; z-index: 110; background: rgba(255,255,255,0.1); border: 1px solid white; color: white; padding: 8px 12px; font-family: serif; font-size: 0.8rem; border-radius: 5px; }
         #endingScreen { background: white; color: #333; display: none; opacity: 0; }
     </style>
 </head>
@@ -29,13 +23,11 @@
     <div id="startScreen" class="overlay">
         <h1>飛鳥コスモス</h1>
         <p style="margin-top: 10px; opacity: 0.8;">— 10000の記憶を辿る旅 —</p>
-        <button class="btn" onclick="startGame()">夜をはじめる</button>
+        <button class="btn" id="startBtn">夜をはじめる</button>
     </div>
 
     <div id="ui">光の記憶: <span id="scoreVal">0</span></div>
-    
-    <button id="audioControl" onclick="toggleAudio()">♫ 音声: オフ</button>
-    <div id="msg"></div>
+    <button id="audioControl">♫ 音声: オフ</button>
 
     <div id="endingScreen" class="overlay">
         <h2>すべてのひかりが、ひとつに。</h2>
@@ -48,74 +40,79 @@
         const canvas = document.getElementById('cosmosCanvas');
         const ctx = canvas.getContext('2d');
         const scoreDisp = document.getElementById('scoreVal');
-        const msgDisp = document.getElementById('msg');
         const startScreen = document.getElementById('startScreen');
         const endingScreen = document.getElementById('endingScreen');
         const uiLayer = document.getElementById('ui');
         const audioBtn = document.getElementById('audioControl');
+        const startBtn = document.getElementById('startBtn');
 
         let width, height, score = 0, slowTime = 0, isPlaying = false, isEnding = false;
         let planets = [], comets = [], particles = [];
         
-        // オーディオ設定
-        const bgmFiles = ['asuka1.mp3', 'asuka2.mp3', 'asuka3.mp3', 'asuka4.mp3', 'asuka5.mp3'];
+        // オーディオ周りの修正
+        let audioCtx = null;
         let bgm = new Audio();
         bgm.loop = true;
         let audioEnabled = false;
-        let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const bgmFiles = ['asuka1.mp3', 'asuka2.mp3', 'asuka3.mp3', 'asuka4.mp3', 'asuka5.mp3'];
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        startBtn.addEventListener('click', () => {
+            initAudio(); // 最初のクリックで音を許可
+            startGame();
+        });
+
+        audioBtn.addEventListener('click', () => {
+            initAudio();
+            toggleAudio();
+        });
 
         function toggleAudio() {
             audioEnabled = !audioEnabled;
             if (audioEnabled) {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const randomBGM = bgmFiles[Math.floor(Math.random() * bgmFiles.length)];
-                bgm.src = randomBGM;
-                bgm.play();
-                audioBtn.innerText = "♫ 音声: オン";
+                if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+                try {
+                    const randomBGM = bgmFiles[Math.floor(Math.random() * bgmFiles.length)];
+                    bgm.src = randomBGM;
+                    bgm.play().catch(e => console.log("Audio play blocked"));
+                    audioBtn.innerText = "♫ 音声: オン";
+                } catch(e) {}
             } else {
                 bgm.pause();
                 audioBtn.innerText = "♫ 音声: オフ";
             }
         }
 
-        // 高音質効果音生成（和楽器・クリスタル系）
         function playKira(freq, duration = 0.5, glissando = 1.0) {
-            if (!audioEnabled) return;
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            let filter = audioCtx.createBiquadFilter();
-
-            osc.type = 'triangle'; // 和楽器に近い温かみのある音
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            // キラリン感を出すグリッサンド（周波数変化）
-            osc.frequency.exponentialRampToValueAtTime(freq * glissando, audioCtx.currentTime + duration);
-
-            filter.type = 'highpass'; // 高音成分を強調してキラキラさせる
-            filter.frequency.setValueAtTime(2000, audioCtx.currentTime);
-
-            gain.gain.setValueAtTime(0.0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.01); // アタック音
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration); // 余韻
-
-            osc.connect(filter);
-            filter.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
+            if (!audioEnabled || !audioCtx) return;
+            try {
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(freq * glissando, audioCtx.currentTime + duration);
+                gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
         }
 
         function resize() {
             width = window.innerWidth; height = window.innerHeight;
             canvas.width = width; canvas.height = height;
-            createPlanets();
-        }
-
-        function createPlanets() {
             planets = [
-                { id: 'gold', x: width * 0.5, y: height * 0.55, r: 45, color: '#FFD700', glow: '#FF8C00', cd: 0, maxCd: 0 },
+                { id: 'gold', x: width * 0.5, y: height * 0.55, r: 40, color: '#FFD700', glow: '#FF8C00', cd: 0, maxCd: 0 },
                 { id: 'blue', x: width * 0.25, y: height * 0.35, r: 35, color: '#B0E0E6', glow: '#00BFFF', cd: 0, maxCd: 600 },
-                { id: 'pink', x: width * 0.75, y: height * 0.35, r: 40, color: '#FFB7C5', glow: '#FF69B4', cd: 0, maxCd: 900 }
+                { id: 'pink', x: width * 0.75, y: height * 0.35, r: 38, color: '#FFB7C5', glow: '#FF69B4', cd: 0, maxCd: 900 }
             ];
         }
 
@@ -123,10 +120,10 @@
             startScreen.style.opacity = 0;
             setTimeout(() => { 
                 startScreen.style.display = 'none'; 
-                uiLayer.style.display = 'block'; // スコア表示をオン
+                uiLayer.style.display = 'block';
                 isPlaying = true; 
                 resize(); animate(); 
-            }, 1000);
+            }, 500);
         }
 
         class Particle {
@@ -134,10 +131,10 @@
                 this.x = x; this.y = y; this.opacity = 1.0;
                 this.color = isRainbow ? `hsl(${Math.random() * 360}, 100%, 70%)` : color;
                 this.size = Math.random() * (isExplosion ? 6 : 2);
-                this.vx = isExplosion ? (Math.random() - 0.5) * 12 : 0;
-                this.vy = isExplosion ? (Math.random() - 0.5) * 12 : 0;
+                this.vx = isExplosion ? (Math.random() - 0.5) * 10 : 0;
+                this.vy = isExplosion ? (Math.random() - 0.5) * 10 : 0;
             }
-            update() { this.x += this.vx; this.y += this.vy; this.opacity -= 0.025; }
+            update() { this.x += this.vx; this.y += this.vy; this.opacity -= 0.03; }
             draw() { ctx.save(); ctx.globalAlpha = this.opacity; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.fill(); ctx.restore(); }
         }
 
@@ -146,103 +143,62 @@
             init() {
                 this.active = true;
                 const s = (slowTime > 0) ? 0.2 : 1.0;
-                // 「ヤマト」出現音：高く澄んだ音
-                if (this.type === 'YAMATO') playKira(2000, 1.0, 0.5); 
-                // 「アマツ」出現音：少し低い音
-                else if (this.type === 'AMATSU') playKira(1500, 0.8, 0.5); 
-
-                if (this.type === 'YAMATO') { this.x = width + 100; this.y = height * 0.45; this.vx = -30 * s; this.vy = 0; this.color = '#FFFFFF'; this.size = 10; this.point = 500; }
-                else if (this.type === 'AMATSU') { this.x = width + 50; this.y = Math.random() * height * 0.4; this.vx = -22 * s; this.vy = 10 * s; this.color = '#FFFFFF'; this.size = 6; this.point = 100; }
-                else {
-                    this.x = Math.random() * width; this.y = -50;
-                    this.vx = (Math.random() - 0.5) * 2 * s; this.vy = (this.type === 'CHINU' ? 3.5 : 5) * s;
-                    this.color = (this.type === 'CHINU' ? '#87CEFA' : (this.type === 'MENOKO' ? '#FFC0CB' : '#F0F8FF'));
-                    this.size = 3; this.point = 10;
-                }
+                if (this.type === 'YAMATO') { playKira(2000, 0.8, 0.5); this.x = width + 100; this.y = height * 0.45; this.vx = -25 * s; this.vy = 0; this.color = '#FFFFFF'; this.size = 9; this.point = 500; }
+                else if (this.type === 'AMATSU') { playKira(1500, 0.6, 0.5); this.x = width + 50; this.y = Math.random() * height * 0.4; this.vx = -18 * s; this.vy = 8 * s; this.color = '#FFFFFF'; this.size = 6; this.point = 100; }
+                else { this.x = Math.random() * width; this.y = -50; this.vx = (Math.random() - 0.5) * 2 * s; this.vy = (this.type === 'CHINU' ? 3.5 : 5) * s; this.color = (this.type === 'CHINU' ? '#87CEFA' : (this.type === 'MENOKO' ? '#FFC0CB' : '#F0F8FF')); this.size = 3; this.point = 10; }
             }
-            update() {
-                this.x += this.vx; this.y += this.vy;
-                if (Math.random() > 0.25) particles.push(new Particle(this.x, this.y, this.color, false, this.type==='YAMATO'));
-                if (this.x < -200 || this.x > width + 200 || this.y > height + 200) this.active = false;
-            }
-            draw() { ctx.save(); ctx.shadowBlur = 15; ctx.shadowColor = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.fill(); ctx.restore(); }
+            update() { this.x += this.vx; this.y += this.vy; if (Math.random() > 0.3) particles.push(new Particle(this.x, this.y, this.color, false, this.type==='YAMATO')); if (this.x < -150 || this.x > width + 150 || this.y > height + 150) this.active = false; }
+            draw() { ctx.save(); ctx.shadowBlur = 10; ctx.shadowColor = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.fill(); ctx.restore(); }
         }
 
         function handleInteraction(ex, ey) {
             if (!isPlaying || isEnding) return;
             planets.forEach(p => {
-                if (Math.hypot(p.x - ex, p.y - ey) < p.r + 30 && p.cd <= 0) {
-                    if (p.id === 'gold') { slowTime = 180; playKira(660, 1.0, 1.0); } // 落ち着いた音
-                    else if (p.id === 'blue') { 
-                        const targetX = width / 2; const targetY = height * 0.3;
-                        comets.forEach(c => { c.vx = (targetX - c.x) * 0.04; c.vy = (targetY - c.y) * 0.04; }); 
-                        p.cd = p.maxCd; playKira(1320, 0.8, 1.2); // 高めの音
-                    }
-                    else if (p.id === 'pink') { 
-                        let totalPoints = 0;
-                        comets.forEach(c => { totalPoints += c.point; c.active = false; for(let i=0;i<5;i++) particles.push(new Particle(c.x,c.y,c.color,true)); }); 
-                        updateScore(totalPoints); p.cd = p.maxCd; 
-                        // 『キラリン✨』連打音
-                        for(let i=0; i<3; i++) {
-                            setTimeout(() => playKira(2000 + i * 200, 0.3, 1.5), i * 100);
-                        }
-                    }
-                    for (let i = 0; i < 40; i++) particles.push(new Particle(p.x, p.y, p.color, true));
+                if (Math.hypot(p.x - ex, p.y - ey) < p.r + 35 && p.cd <= 0) {
+                    if (p.id === 'gold') { slowTime = 180; playKira(660, 0.8, 1.0); }
+                    else if (p.id === 'blue') { const tx = width / 2; const ty = height * 0.3; comets.forEach(c => { c.vx = (tx - c.x) * 0.04; c.vy = (ty - c.y) * 0.04; }); p.cd = p.maxCd; playKira(1320, 0.6, 1.2); }
+                    else if (p.id === 'pink') { let pts = 0; comets.forEach(c => { pts += c.point; c.active = false; for(let i=0;i<4;i++) particles.push(new Particle(c.x,c.y,c.color,true)); }); score += pts; scoreDisp.innerText = score; p.cd = p.maxCd; for(let i=0; i<3; i++) setTimeout(() => playKira(2000 + i * 200, 0.3, 1.5), i * 100); }
+                    for (let i = 0; i < 30; i++) particles.push(new Particle(p.x, p.y, p.color, true));
+                    if (score >= 10000) showEnding();
                 }
             });
             comets.forEach(c => {
-                const hitZone = (window.innerWidth < 600) ? 75 : 60;
-                if (Math.hypot(c.x - ex, c.y - ey) < hitZone) {
-                    c.active = false;
-                    updateScore(c.point);
-                    playKira(1800 + Math.random() * 400, 0.1, 1.0); // 通常タップ音：短くキラッと
-                    for (let i = 0; i < 20; i++) particles.push(new Particle(c.x, c.y, c.color, true, c.type==='YAMATO'));
+                const hit = (width < 600) ? 80 : 60;
+                if (Math.hypot(c.x - ex, c.y - ey) < hit) {
+                    c.active = false; score += c.point; scoreDisp.innerText = score;
+                    playKira(1800 + Math.random() * 400, 0.1, 1.0);
+                    for (let i = 0; i < 15; i++) particles.push(new Particle(c.x, c.y, c.color, true, c.type==='YAMATO'));
+                    if (score >= 10000) showEnding();
                 }
             });
-        }
-
-        function updateScore(add) {
-            score += add; scoreDisp.innerText = score;
-            if (score >= 10000) showEnding();
         }
 
         function showEnding() { isEnding = true; endingScreen.style.display = 'flex'; setTimeout(() => { endingScreen.style.opacity = 1; }, 100); }
 
         window.addEventListener('mousedown', e => handleInteraction(e.clientX, e.clientY));
-        window.addEventListener('touchstart', e => { handleInteraction(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }, {passive: false});
+        window.addEventListener('touchstart', e => { 
+            const touch = e.touches[0];
+            handleInteraction(touch.clientX, touch.clientY);
+            if(isPlaying) e.preventDefault(); 
+        }, {passive: false});
+
         window.addEventListener('resize', resize);
 
         function animate() {
             if (!isPlaying || isEnding) return;
-            const bgStep = Math.min(score / 9000, 1);
-            const r = 15 + (220 - 15) * bgStep; const g = 15 + (160 - 15) * bgStep; const b = 58 + (180 - 58) * bgStep;
+            const step = Math.min(score / 9000, 1);
+            const r = 15 + 205 * step, g = 15 + 145 * step, b = 58 + 122 * step;
             canvas.style.background = `radial-gradient(circle at center, rgb(${r},${g},${b+30}), rgb(${r/4},${g/4},${b/3}))`;
-
             ctx.clearRect(0, 0, width, height);
             if (slowTime > 0) slowTime--;
-
-            planets.forEach(p => {
-                if (p.cd > 0) p.cd--;
-                const isAvail = p.cd <= 0;
-                ctx.save();
-                ctx.shadowBlur = isAvail ? 25 : 5; ctx.shadowColor = p.glow;
-                ctx.globalAlpha = isAvail ? 1.0 : 0.2;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = p.color; ctx.fill();
-                ctx.restore();
-            });
-
+            planets.forEach(p => { if (p.cd > 0) p.cd--; const a = p.cd <= 0 ? 1.0 : 0.2; ctx.save(); ctx.shadowBlur = p.cd <= 0 ? 20 : 5; ctx.shadowColor = p.glow; ctx.globalAlpha = a; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = p.color; ctx.fill(); ctx.restore(); });
             if (Math.random() > (score >= 5000 ? 0.99 : 0.998)) comets.push(new Comet(score >= 5000 && Math.random() > 0.85 ? 'YAMATO' : 'AMATSU'));
             if (Math.random() > 0.98) comets.push(new Comet('ASUKA'));
             if (Math.random() > 0.985) comets.push(new Comet('CHINU'));
-
-            comets = comets.filter(c => c.active);
-            comets.forEach(c => { c.update(); c.draw(); });
-            particles = particles.filter(p => p.opacity > 0);
-            particles.forEach(p => { p.update(); p.draw(); });
-
+            comets = comets.filter(c => c.active); comets.forEach(c => { c.update(); c.draw(); });
+            particles = particles.filter(p => p.opacity > 0); particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animate);
         }
-
         resize();
     </script>
 </body>
