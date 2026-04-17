@@ -210,6 +210,7 @@
     .game-card:nth-child(3) { animation-delay: 0.3s; opacity:0; }
     .game-card:nth-child(4) { animation-delay: 0.4s; opacity:0; }
     .game-card:nth-child(5) { animation-delay: 0.5s; opacity:0; }
+    .game-card:nth-child(6) { animation-delay: 0.6s; opacity:0; }
 
     /* スマホ対応 */
     @media (max-width: 480px) {
@@ -218,15 +219,6 @@
       .game-card .icon { font-size: 36px; }
     }
   </style>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-6852GRP9WE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-6852GRP9WE');
-</script>
 </head>
 <body>
 
@@ -256,28 +248,38 @@
     <!-- 妖精育成ゲーム -->
     <a class="game-card" href="fairy-garden.html"
        style="border-color:#f0d0ff">
-      <span class="icon">🧚</span>
+      <img src="fairy.png" class="icon" style="width:56px;height:56px;object-fit:contain;">
       <div class="game-name" style="color:#b060e0">ようせいそだて</div>
       <div class="game-desc">たまごから育てよう！<br>かわいい妖精が成長するよ✨</div>
       <span class="tag" style="background:#f5e0ff;color:#9030c0">育成ゲーム</span>
     </a>
 
-    <!-- アフタヌーンティーゲーム -->
-<a class="game-card" href="teatime.html"
-   style="border-color:#d4c4a8">
-  <span class="icon">☕</span>
-  <div class="game-name" style="color:#b8966a">自分だけのティータイム</div>
-  <div class="game-desc">妖精と一緒に<br>アフタヌーンティーを楽しもう✨</div>
-  <span class="tag" style="background:#fdf5e8;color:#b8966a">選択ゲーム</span>
- </a>
+    <!-- ティータイムゲーム -->
+    <a class="game-card" href="teatime.html"
+       style="border-color:#d4c4a8">
+      <img src="tea-earlgrey.png" class="icon" style="width:56px;height:56px;object-fit:contain;">
+      <div class="game-name" style="color:#b8966a">あなたのティータイム</div>
+      <div class="game-desc">シーンとお茶を選んで<br>特別なひとときを過ごそう🌸</div>
+      <span class="tag" style="background:#fdf5e8;color:#b8966a">癒しゲーム</span>
+    </a>
 
-    <!-- 近日公開② -->
-    <div class="game-card coming" style="border-color:#b8e8ff">
-      <span class="icon">⭐</span>
-      <div class="game-name" style="color:#4080c0">準備中…</div>
-      <div class="game-desc">新しいゲームを<br>せっせと作ってるよ！</div>
-      <span class="tag" style="background:#d8f0ff;color:#4080c0">近日公開</span>
-    </div>
+    <!-- ベジ・パニック -->
+    <a class="game-card" href="vege-panic.html"
+       style="border-color:#b8f0b8">
+      <img src="ninzin.png" class="icon" style="width:56px;height:56px;object-fit:contain;">
+      <div class="game-name" style="color:#3a9040">ベジ・パニック</div>
+      <div class="game-desc">降ってくる野菜を<br>ハムスターが打ち落とせ！🐹</div>
+      <span class="tag" style="background:#e0f8e0;color:#3a9040">シューティング</span>
+    </a>
+
+    <!-- 飛鳥コスモス -->
+    <a class="game-card" href="asuka-cosmos.html"
+       style="border-color:#c0c8ff">
+      <img src="asuka.png" class="icon" style="width:56px;height:56px;object-fit:contain;">
+      <div class="game-name" style="color:#4050c0">飛鳥コスモス</div>
+      <div class="game-desc">降り注ぐ流れ星をタップして<br>美しい宇宙を旅しよう✨</div>
+      <span class="tag" style="background:#e8ecff;color:#4050c0">タップゲーム</span>
+    </a>
 
   </div>
 
