@@ -7,52 +7,42 @@
     <style>
         body { margin: 0; overflow: hidden; background: #fff0f5; touch-action: none; font-family: 'Hiragino Kaku Gothic ProN', sans-serif; }
         canvas { display: block; }
-        #ui-container { position: absolute; top: 10px; left: 10px; color: #ff69b4; font-size: 16px; font-weight: bold; pointer-events: none; text-shadow: 1px 1px white; z-index: 5;}
         
-        .btn { 
-            position: absolute; 
-            padding: 12px 20px; 
-            font-size: 18px; 
-            font-weight: bold; 
-            color: white; 
-            background: #ff69b4; 
-            border: none; 
-            border-radius: 25px; 
-            cursor: pointer; 
-            box-shadow: 0 4px #d85091; 
-            transition: 0.1s; 
-            z-index: 100; /* ボタンを最前面に */
-            touch-action: manipulation; 
+        #ui-container { 
+            position: absolute; top: 10px; left: 10px; color: #ff69b4; 
+            font-size: 16px; font-weight: bold; pointer-events: none; 
+            text-shadow: 1px 1px white; z-index: 20;
         }
-        .btn:active { transform: translateY(2px) translateX(-50%); box-shadow: 0 1px #d85091; }
         
-        #muteBtn { top: 10px; right: 10px; width: 44px; height: 44px; padding: 0; font-size: 20px; background: #ffb6c1; display: flex; align-items: center; justify-content: center; transform: none; }
-        #pauseBtn { top: 10px; right: 60px; font-size: 14px; background: #ffb6c1; width: auto; display: none; transform: none; }
-        
-        #startBtn { top: 55%; left: 50%; transform: translate(-50%, -50%); padding: 18px 36px; font-size: 22px; width: 200px; }
-        
-        .difficulty-btn { left: 50%; transform: translateX(-50%); width: 180px; display: none; }
-        #easyBtn { top: 48%; background: #98fb98; box-shadow: 0 4px #6ac46a;}
-        #normalBtn { top: 60%; background: #ffd700; box-shadow: 0 4px #b89b00;}
-        #hardBtn { top: 72%; background: #ff4500; box-shadow: 0 4px #b33000;}
-        
-        #retryBtn { top: 65%; left: 50%; transform: translate(-50%, -50%); display: none; width: 180px; }
-        #item-timer { color: #ff1493; font-size: 14px; font-weight: bold; display: none; }
-
+        /* タイトルサイズを適切に調整 */
         .title-text {
-            position: absolute;
-            width: 90%;
-            left: 50%;
-            top: 25%;
-            transform: translate(-50%, -50%);
-            color: #ff69b4;
-            text-align: center;
-            font-weight: bold;
-            font-size: 7.5vw;
-            pointer-events: none; /* 文字がボタンの邪魔をしないように */
-            z-index: 5;
-            text-shadow: 2px 2px white;
+            position: absolute; width: 100%; left: 0; top: 20%;
+            color: #ff69b4; text-align: center; font-weight: bold;
+            font-size: clamp(24px, 8vw, 40px); /* 最小24px, 最大40pxに制限 */
+            pointer-events: none; z-index: 10; text-shadow: 2px 2px white;
         }
+
+        .btn { 
+            position: absolute; padding: 12px 24px; font-size: 18px; 
+            font-weight: bold; color: white; background: #ff69b4; 
+            border: none; border-radius: 30px; cursor: pointer; 
+            box-shadow: 0 4px #d85091; z-index: 100;
+            touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+        }
+        .btn:active { transform: translateY(2px); box-shadow: 0 1px #d85091; }
+        
+        #muteBtn { top: 10px; right: 10px; width: 44px; height: 44px; padding: 0; font-size: 20px; background: #ffb6c1; border-radius: 50%; }
+        #pauseBtn { top: 10px; right: 65px; font-size: 14px; background: #ffb6c1; display: none; }
+        
+        #startBtn { top: 55%; left: 50%; transform: translate(-50%, -50%); width: 220px; }
+        
+        .difficulty-btn { left: 50%; transform: translateX(-50%); width: 200px; display: none; }
+        #easyBtn { top: 45%; background: #98fb98; box-shadow: 0 4px #6ac46a;}
+        #normalBtn { top: 57%; background: #ffd700; box-shadow: 0 4px #b89b00;}
+        #hardBtn { top: 69%; background: #ff4500; box-shadow: 0 4px #b33000;}
+        
+        #retryBtn { top: 65%; left: 50%; transform: translate(-50%, -50%); display: none; width: 200px; }
+        #item-timer { color: #ff1493; font-size: 14px; display: none; }
     </style>
 </head>
 <body>
@@ -100,8 +90,6 @@
         function resize() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            const fontSize = Math.min(window.innerWidth * 0.08, 32);
-            ui.title.style.fontSize = fontSize + "px";
         }
         window.addEventListener('resize', resize);
         resize();
@@ -185,21 +173,19 @@
             if (!isMuted && currentBgm) currentBgm.play().catch(()=>{});
         }
 
-        // --- ボタンイベントの修正 ---
-        buttons.mute.addEventListener('pointerdown', (e) => {
-            e.stopPropagation();
+        // ボタンのクリック処理を確実に
+        buttons.mute.onclick = (e) => {
             isMuted = !isMuted;
             buttons.mute.innerText = isMuted ? '🔇' : '🔊';
             if (isMuted) { if (currentBgm) currentBgm.pause(); }
             else { audioCtx.resume(); if (currentBgm) currentBgm.play().catch(()=>{}); }
-        });
+        };
 
-        buttons.start.addEventListener('pointerdown', (e) => {
-            e.stopPropagation();
+        buttons.start.onclick = () => {
             buttons.start.style.display = 'none';
             buttons.easy.style.display = buttons.normal.style.display = buttons.hard.style.display = 'block';
             switchBgm(bgm.opening);
-        });
+        };
 
         function startGame(difficulty) {
             currentConfig = configs[difficulty];
@@ -210,14 +196,116 @@
             gameState = 'PLAY';
             switchBgm(currentConfig.bgm);
         }
-        ['easy', 'normal', 'hard'].forEach(d => {
-            buttons[d].addEventListener('pointerdown', (e) => {
-                e.stopPropagation();
-                startGame(d);
-            });
-        });
+        buttons.easy.onclick = () => startGame('easy');
+        buttons.normal.onclick = () => startGame('normal');
+        buttons.hard.onclick = () => startGame('hard');
 
-        buttons.pause.addEventListener('pointerdown', (e) => {
-            e.stopPropagation();
+        buttons.pause.onclick = () => {
             if (gameState === 'PLAY') { gameState = 'PAUSE'; buttons.pause.innerText = 'RESUME'; if(currentBgm) currentBgm.pause(); }
             else { gameState = 'PLAY'; buttons.pause.innerText = 'PAUSE'; if(!isMuted && currentBgm) currentBgm.play(); }
+        };
+        buttons.retry.onclick = () => location.reload();
+
+        function loop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const squish = 1 + Math.sin(frame * 0.15) * 0.1;
+
+            if (gameState === 'TITLE') {
+                decorCandies.forEach(c => {
+                    c.y -= 0.5; c.a += c.sp; if(c.y < -c.s) c.y = canvas.height + c.s;
+                    ctx.save(); ctx.globalAlpha = 0.2; ctx.translate(c.x + Math.sin(c.a)*20, c.y); ctx.rotate(c.a);
+                    ctx.drawImage(img.candy, -c.s/2, -c.s/2, c.s, c.s); ctx.restore();
+                });
+            } else if (gameState === 'PLAY' || gameState === 'PAUSE') {
+                if (gameState === 'PLAY') update();
+                draw();
+                if (gameState === 'PAUSE') {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+            } else {
+                drawResult();
+            }
+            frame++;
+            requestAnimationFrame(loop);
+        }
+
+        function update() {
+            if (powerUpTimer > 0) {
+                powerUpTimer--;
+                ui.timer.style.display = 'block';
+                ui.timeLeft.innerText = Math.ceil(powerUpTimer / 60);
+                if (powerUpTimer <= 0) ui.timer.style.display = 'none';
+            }
+            if (frame % 8 === 0 && isPressing) {
+                const b = { x: player.x, y: player.y - 40, width: 30, height: 30 };
+                bullets.push({ ...b, vx: 0, vy: -12 });
+                if (powerUpTimer > 0) { bullets.push({ ...b, vx: -4, vy: -11 }, { ...b, vx: 4, vy: -11 }); }
+            }
+            bullets.forEach((b, i) => {
+                b.x += b.vx; b.y += b.vy;
+                if (b.y < -30 || b.x < -30 || b.x > canvas.width + 30) bullets.splice(i, 1);
+            });
+            if (frame % 500 === 0 && Math.random() < 0.6) items.push({ x: Math.random() * (canvas.width - 50) + 25, y: -50, width: 60, height: 60 });
+            items.forEach((it, i) => {
+                it.y += 2.5; it.x += Math.sin(frame * 0.05) * 3;
+                if (Math.hypot(it.x - player.x, it.y - player.y) < 55) { items.splice(i, 1); powerUpTimer = 600; }
+            });
+            if (score < 1000 && frame % currentConfig.spawnRate === 0) enemies.push({ x: Math.random() * (canvas.width - 40) + 20, y: -50, width: 65, height: 65, img: img.vegetables[Math.floor(Math.random() * 5)] });
+            enemies.forEach((e, i) => {
+                e.y += currentConfig.enemySpeed;
+                if (Math.hypot(e.x - player.x, e.y - player.y) < 55) endGame('GAMEOVER');
+                bullets.forEach((b, bi) => {
+                    if (Math.hypot(e.x - b.x, e.y - b.y) < 45) { playSE('hit'); enemies.splice(i, 1); bullets.splice(bi, 1); updateScore(10); }
+                });
+            });
+            if (score >= 1000 && !boss) boss = { x: canvas.width/2, y: -150, width: currentConfig.bossSize, height: currentConfig.bossSize, hp: currentConfig.bossHp, maxHp: currentConfig.bossHp, img: currentConfig.bossImg };
+            if (boss) {
+                if (boss.y < boss.height/2 + 50) boss.y += 1;
+                boss.x = canvas.width/2 + Math.sin(frame * 0.04) * (canvas.width/2 - boss.width/2 - 20);
+                bullets.forEach((b, bi) => {
+                    if (Math.hypot(boss.x - b.x, boss.y - b.y) < boss.width/2 + 20) { playSE('hit'); boss.hp--; bullets.splice(bi, 1); if (boss.hp <= 0) { playSE('clear'); endGame('CLEAR'); } }
+                });
+            }
+        }
+
+        function updateScore(pts) { score += pts; ui.score.innerText = score; if (score > bestScore) { bestScore = score; ui.best.innerText = bestScore; localStorage.setItem('bestScore', bestScore); } }
+
+        function draw() {
+            const squish = 1 + Math.sin(frame * 0.15) * 0.1;
+            bullets.forEach(b => ctx.drawImage(img.candy, b.x - b.width/2, b.y - b.height/2, b.width, b.height));
+            items.forEach(it => ctx.drawImage(img.hana, it.x - it.width/2, it.y - it.height/2, it.width, it.height));
+            enemies.forEach(e => drawPuniPuni(e.img, e.x, e.y, e.width, e.height, squish, true));
+            drawPuniPuni(img.hamu, player.x, player.y, player.width, player.height, squish);
+            if (boss) {
+                drawPuniPuni(boss.img, boss.x, boss.y, boss.width, boss.height, squish, true);
+                ctx.fillStyle = '#eee'; ctx.fillRect(boss.x - boss.width/2, boss.y - boss.height/2 - 30, boss.width, 12);
+                ctx.fillStyle = '#ff1493'; ctx.fillRect(boss.x - boss.width/2, boss.y - boss.height/2 - 30, (boss.hp/boss.maxHp)*boss.width, 12);
+            }
+        }
+
+        function drawPuniPuni(image, x, y, width, height, squish, reverse = false) {
+            ctx.save(); ctx.translate(x, y);
+            if (reverse) ctx.scale(2 - squish, squish); else ctx.scale(squish, 2 - squish);
+            ctx.drawImage(image, -width/2, -height/2, width, height); ctx.restore();
+        }
+
+        function endGame(state) { gameState = state; buttons.retry.style.display = 'block'; buttons.pause.style.display = 'none'; }
+
+        function drawResult() {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.textAlign = 'center'; ctx.fillStyle = '#ff69b4'; ctx.font = 'bold 36px sans-serif';
+            ctx.fillText(gameState === 'GAMEOVER' ? 'おなかいっぱい…' : `✨ ${currentConfig.name} 完食！ ✨`, canvas.width/2, canvas.height/2 - 20);
+        }
+
+        let isPressing = false;
+        canvas.addEventListener('mousedown', (e) => { isPressing = true; handleMove(e); });
+        canvas.addEventListener('touchstart', (e) => { isPressing = true; handleMove(e); e.preventDefault(); }, {passive: false});
+        window.addEventListener('mouseup', () => isPressing = false);
+        window.addEventListener('touchend', () => isPressing = false);
+        window.addEventListener('mousemove', (e) => { if(isPressing) handleMove(e); });
+        window.addEventListener('touchmove', (e) => { if(isPressing) { handleMove(e); e.preventDefault(); } }, {passive: false});
+
+        loop();
+    </script>
+</body>
+</html>
