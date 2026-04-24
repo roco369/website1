@@ -9,7 +9,337 @@
   <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
+      --pink:    #ffb8d0;<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>rocoのゲーム部屋 - 無料ブラウザゲーム</title>
+  <meta name="description" content="rocoのゲーム部屋へようこそ！無料で遊べるブラウザゲームを公開しています。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
       --pink:    #ffb8d0;
+      --peach:   #ffd4b8;
+      --yellow:  #fff4b8;
+      --mint:    #b8f0d8;
+      --sky:     #b8deff;
+      --lavender:#d8b8ff;
+      --white:   #fffcfa;
+      --text:    #5a3a4a;
+      --text-sub:#a07888;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      background: var(--white);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ---- 背景の浮かぶ丸 ---- */
+    .bubbles {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .bubble {
+      position: absolute; border-radius: 50%; opacity: 0.35;
+      animation: drift linear infinite;
+    }
+    @keyframes drift {
+      0%   { transform: translateY(110vh) scale(1); opacity: 0; }
+      10%  { opacity: 0.35; }
+      90%  { opacity: 0.35; }
+      100% { transform: translateY(-20vh) scale(1.1); opacity: 0; }
+    }
+
+    /* ---- ヘッダー ---- */
+    header {
+      position: relative; z-index: 10;
+      padding: 56px 24px 48px;
+      text-align: center;
+      background: linear-gradient(180deg, #fff0f8 0%, var(--white) 100%);
+    }
+    .header-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--pink), var(--lavender));
+      color: white; font-size: 11px; font-weight: 700;
+      padding: 4px 14px; border-radius: 20px;
+      letter-spacing: 1.5px; margin-bottom: 18px;
+      animation: fadeDown 0.6s ease both;
+    }
+    .header-title {
+      font-family: 'Kaisei Decol', serif;
+      font-size: clamp(32px, 8vw, 56px);
+      font-weight: 700;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #e06090, #a060d0, #6090e0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeDown 0.6s 0.1s ease both;
+      opacity: 0;
+    }
+    .header-sub {
+      margin-top: 12px;
+      font-size: 14px; color: var(--text-sub);
+      animation: fadeDown 0.6s 0.2s ease both;
+      opacity: 0;
+    }
+    .header-deco {
+      margin-top: 24px;
+      display: flex; justify-content: center; gap: 8px;
+      animation: fadeDown 0.6s 0.3s ease both;
+      opacity: 0;
+    }
+    .deco-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      animation: bounce 1.4s ease-in-out infinite;
+    }
+    .deco-dot:nth-child(2) { animation-delay: 0.15s; }
+    .deco-dot:nth-child(3) { animation-delay: 0.30s; }
+    .deco-dot:nth-child(4) { animation-delay: 0.45s; }
+    .deco-dot:nth-child(5) { animation-delay: 0.60s; }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+
+    /* ---- セクション ---- */
+    main { position: relative; z-index: 10; padding: 0 20px 80px; max-width: 800px; margin: 0 auto; }
+
+    .section-title {
+      font-family: 'Kaisei Decol', serif;
+      font-size: 20px; font-weight: 700;
+      color: var(--text);
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title::after {
+      content: "";
+      flex: 1; height: 2px;
+      background: linear-gradient(90deg, var(--pink), transparent);
+      border-radius: 2px;
+    }
+
+    /* ---- ゲームカード ---- */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .game-card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px 18px 20px;
+      text-align: center;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 20px rgba(180,120,160,0.1);
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      text-decoration: none; color: inherit;
+      display: block;
+      animation: fadeUp 0.5s ease both;
+      cursor: pointer;
+    }
+    .game-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 32px rgba(180,120,160,0.2);
+    }
+    .game-card .icon {
+      font-size: 44px;
+      margin-bottom: 12px;
+      display: block;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+    .game-card .game-name {
+      font-size: 15px; font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .game-card .game-desc {
+      font-size: 11px; color: var(--text-sub);
+      line-height: 1.6;
+    }
+    .game-card .tag {
+      display: inline-block;
+      font-size: 10px; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+      margin-top: 12px;
+    }
+
+    /* 近日公開カード */
+    .game-card.coming {
+      opacity: 0.6;
+      cursor: default;
+    }
+    .game-card.coming:hover { transform: none; box-shadow: 0 4px 20px rgba(180,120,160,0.1); }
+
+    /* ---- aboutセクション ---- */
+    .about-box {
+      background: linear-gradient(135deg, #fff0f8, #f0f0ff);
+      border-radius: 24px;
+      padding: 32px 28px;
+      border: 2px solid #f0d8f0;
+      margin-bottom: 48px;
+      animation: fadeUp 0.5s 0.3s ease both;
+      opacity: 0;
+    }
+    .about-box p {
+      font-size: 14px; line-height: 2;
+      color: var(--text-sub);
+    }
+    .about-box strong { color: var(--text); }
+
+    /* ---- フッター ---- */
+    footer {
+      position: relative; z-index: 10;
+      text-align: center;
+      padding: 32px 20px;
+      font-size: 12px; color: var(--text-sub);
+      border-top: 1px solid #f0e0f0;
+    }
+    footer .footer-title {
+      font-family: 'Kaisei Decol', serif;
+      font-size: 16px; color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    /* ---- アニメーション ---- */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* カードを順番に表示 */
+    .game-card:nth-child(1) { animation-delay: 0.1s; opacity:0; }
+    .game-card:nth-child(2) { animation-delay: 0.2s; opacity:0; }
+    .game-card:nth-child(3) { animation-delay: 0.3s; opacity:0; }
+    .game-card:nth-child(4) { animation-delay: 0.4s; opacity:0; }
+    .game-card:nth-child(5) { animation-delay: 0.5s; opacity:0; }
+    .game-card:nth-child(6) { animation-delay: 0.6s; opacity:0; }
+
+    /* スマホ対応 */
+    @media (max-width: 480px) {
+      .games-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .game-card { padding: 18px 12px 16px; }
+      .game-card .icon { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 浮かぶ丸（背景） -->
+<div class="bubbles" id="bubbles"></div>
+
+<!-- ヘッダー -->
+<header>
+  <div class="header-badge">🎮 無料ブラウザゲーム</div>
+  <h1 class="header-title">rocoのゲーム部屋</h1>
+  <p class="header-sub">ひまつぶしに、ゆったり遊んでね🌸</p>
+  <div class="header-deco">
+    <div class="deco-dot" style="background:var(--pink)"></div>
+    <div class="deco-dot" style="background:var(--peach)"></div>
+    <div class="deco-dot" style="background:var(--yellow)"></div>
+    <div class="deco-dot" style="background:var(--mint)"></div>
+    <div class="deco-dot" style="background:var(--lavender)"></div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ゲーム一覧 -->
+  <div class="section-title">🎠 ゲーム一覧</div>
+  <div class="games-grid">
+
+    <!-- 妖精育成ゲーム -->
+    <a class="game-card" href="fairy-garden.html"
+       style="border-color:#f0d0ff">
+      <img src="fairy.png" class="icon" style="width:56px;height:56px;object-fit:contain;display:block;margin:0 auto 4px;">
+      <div class="game-name" style="color:#b060e0">ようせいそだて</div>
+      <div class="game-desc">たまごから育てよう！<br>かわいい妖精が成長するよ✨</div>
+      <span class="tag" style="background:#f5e0ff;color:#9030c0">育成ゲーム</span>
+    </a>
+
+    <!-- ティータイムゲーム -->
+    <a class="game-card" href="teatime.html"
+       style="border-color:#d4c4a8">
+      <img src="tea-earlgrey.png" class="icon" style="width:56px;height:56px;object-fit:contain;display:block;margin:0 auto 4px;">
+      <div class="game-name" style="color:#b8966a">あなたのティータイム</div>
+      <div class="game-desc">シーンとお茶を選んで<br>特別なひとときを過ごそう🌸</div>
+      <span class="tag" style="background:#fdf5e8;color:#b8966a">癒しゲーム</span>
+    </a>
+
+    <!-- ベジ・パニック -->
+    <a class="game-card" href="vege-panic.html"
+       style="border-color:#b8f0b8">
+      <img src="ninzin.png" class="icon" style="width:56px;height:56px;object-fit:contain;display:block;margin:0 auto 4px;">
+      <div class="game-name" style="color:#3a9040">ベジ・パニック</div>
+      <div class="game-desc">降ってくる野菜を<br>ハムスターが打ち落とせ！🐹</div>
+      <span class="tag" style="background:#e0f8e0;color:#3a9040">シューティング</span>
+    </a>
+
+    <!-- 飛鳥コスモス -->
+    <a class="game-card" href="asuka-cosmos.html"
+       style="border-color:#c0c8ff">
+      <img src="asuka.png" class="icon" style="width:56px;height:56px;object-fit:contain;display:block;margin:0 auto 4px;">
+      <div class="game-name" style="color:#4050c0">飛鳥コスモス</div>
+      <div class="game-desc">降り注ぐ流れ星をタップして<br>美しい宇宙を旅しよう✨</div>
+      <span class="tag" style="background:#e8ecff;color:#4050c0">タップゲーム</span>
+    </a>
+
+  </div>
+
+  <!-- aboutセクション -->
+  <div class="section-title">🌷 このサイトについて</div>
+  <div class="about-box">
+    <p>
+      <strong>rocoのゲーム部屋</strong>へようこそ！🎉<br>
+      このサイトでは、<strong>無料で遊べるブラウザゲーム</strong>を公開しています。<br>
+      インストール不要、アカウント登録不要で、すぐに遊べます。<br>
+      スマホでもパソコンでもOK！ゆっくり楽しんでいってね🌸
+    </p>
+  </div>
+
+</main>
+
+<!-- フッター -->
+<footer>
+  <div class="footer-title">🌸 rocoのゲーム部屋</div>
+  <p style="margin-bottom:10px;">© 2025 roco · すべてのゲームは無料でお楽しみいただけます</p>
+  <a href="https://x.com/roco8xsw" target="_blank" rel="noopener"
+     style="display:inline-flex;align-items:center;gap:6px;color:var(--text-sub);font-size:13px;text-decoration:none;transition:opacity 0.2s;"
+     onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    @roco8xsw
+  </a>
+</footer>
+
+<script>
+// 浮かぶ丸を生成
+const colors = ["#ffb8d0","#ffd4b8","#fff4b8","#b8f0d8","#b8deff","#d8b8ff","#ffc8e8","#c8e8ff"];
+const container = document.getElementById("bubbles");
+for (let i = 0; i < 18; i++) {
+  const el = document.createElement("div");
+  el.className = "bubble";
+  const size = 20 + Math.random() * 60;
+  el.style.cssText = `
+    width:${size}px; height:${size}px;
+    background:${colors[Math.floor(Math.random()*colors.length)]};
+    left:${Math.random()*100}%;
+    animation-duration:${8+Math.random()*14}s;
+    animation-delay:${-Math.random()*20}s;
+  `;
+  container.appendChild(el);
+}
+</script>
+</body>
+</html>
+
       --peach:   #ffd4b8;
       --yellow:  #fff4b8;
       --mint:    #b8f0d8;
