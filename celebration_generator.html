@@ -274,13 +274,20 @@
             const nameEl = document.getElementById('display-name');
             const msgEl  = document.getElementById('display-msg');
 
-            nameEl.innerText = name || '';
-            msgEl.innerText  = msg  || '';
+            // いったんリセット
+            nameEl.style.fontSize = '';
+            msgEl.style.fontSize  = '';
+            nameEl.innerText = '';
+            msgEl.innerText  = '';
 
-            // テキスト自動サイズ調整（表示後に実行）
+            // DOMが確実に描画されてからテキストをセット＆サイズ調整
             requestAnimationFrame(() => {
-                fitText(nameEl, 'name');
-                fitText(msgEl,  'msg');
+                requestAnimationFrame(() => {
+                    nameEl.innerText = name || '';
+                    msgEl.innerText  = msg  || '';
+                    fitText(nameEl, 'name');
+                    fitText(msgEl,  'msg');
+                });
             });
 
             bgmPlayer.src = bgmFile;
