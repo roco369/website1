@@ -70,10 +70,12 @@
         #text-container {
             z-index: 10;
             padding: 20px;
-            animation: celebrateIn 1.5s ease-out forwards;
-            opacity: 0;
             width: 92%;
             max-width: 600px;
+            opacity: 1;
+        }
+        #text-container.animate-in {
+            animation: celebrateIn 1.5s ease-out forwards;
         }
         #display-name { 
             font-size: clamp(1.8rem, 8vw, 3rem);
@@ -267,60 +269,44 @@
 
         function runCelebration(name, msg, bgClass, decoKey, bgmFile) {
             setupScreen.style.display = 'none';
-
-            // いったん非表示にしてDOMをリセット
-            celebScreen.style.display = 'none';
+            celebScreen.style.display = 'flex';
             celebScreen.className = '';
             celebScreen.classList.add(bgClass);
 
             const nameEl = document.getElementById('display-name');
             const msgEl  = document.getElementById('display-msg');
-            nameEl.style.fontSize = '';
-            msgEl.style.fontSize  = '';
-            nameEl.innerText = '';
-            msgEl.innerText  = '';
+            const textContainer = document.getElementById('text-container');
 
-            // パーティクルをクリア
-            document.querySelectorAll('.particle').forEach(p => p.remove());
-            clearInterval(particleInterval);
+            // アニメーションをリセットして再発火
+            textContainer.classList.remove('animate-in');
+            void textContainer.offsetWidth; // リフロー強制
+            textContainer.classList.add('animate-in');
 
-            // 表示してからテキストをセット（iOSのリフロー完了を待つ）
-            celebScreen.style.display = 'flex';
-
-            // テキストを先にセット（フォントサイズはデフォルト値から）
             nameEl.innerText = name || '';
             msgEl.innerText  = msg  || '';
 
-            // 2段階で調整（100ms後 + 400ms後の2回）
-            setTimeout(function() {
+            // テキスト自動サイズ調整（表示後に実行）
+            requestAnimationFrame(() => {
                 fitText(nameEl, 'name');
                 fitText(msgEl,  'msg');
-            }, 100);
-            setTimeout(function() {
-                fitText(nameEl, 'name');
-                fitText(msgEl,  'msg');
-            }, 400);
+            });
 
-            bgmPlayer.pause();
-            bgmPlayer.currentTime = 0;
             bgmPlayer.src = bgmFile;
             bgmPlayer.play().catch(e => console.log('再生不可'));
 
             const config = decoConfig[decoKey];
             if (config && decoKey !== 'none') {
-                setTimeout(function() {
-                    for (let i = 0; i < config.burst; i++) {
-                        createParticle(decoKey, true);
-                    }
-                    particleInterval = setInterval(() => createParticle(decoKey, false), config.interval);
-                }, 200);
+                for (let i = 0; i < config.burst; i++) {
+                    createParticle(decoKey, true);
+                }
+                particleInterval = setInterval(() => createParticle(decoKey, false), config.interval);
             }
         }
 
         // テキストを画面幅に収まるよう自動サイズ調整
         function fitText(el, type) {
             const container = document.getElementById('text-container');
-            const maxW = (container.offsetWidth || window.innerWidth * 0.92) - 20;
+            const maxW = container.offsetWidth - 20; // 左右余白
 
             if (type === 'name') {
                 // 名前は1行に収める
@@ -383,6 +369,7 @@
         backBtn.addEventListener('click', () => {
             bgmPlayer.pause();
             clearInterval(particleInterval);
+            document.getElementById('text-container').classList.remove('animate-in');
             setupScreen.style.display = 'flex';
             celebScreen.style.display = 'none';
             document.querySelectorAll('.particle').forEach(p => p.remove());
